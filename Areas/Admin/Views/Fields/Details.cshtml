@@ -1,0 +1,223 @@
+﻿@model FootballFieldBooking_New.Models.FootballField
+
+@{
+    ViewData["Title"] = "Chi tiết sân";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+
+        <!-- Field Info Card -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0"><i class="bi bi-info-circle"></i> @Model.Name</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="@Model.ImageUrl" class="img-fluid rounded shadow" alt="@Model.Name"
+                             onerror="this.src='/images/default-field.jpg'" />
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="row">
+                            <dt class="col-sm-4">Loại sân:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-success">@Model.FieldType.Name</span>
+                                <span class="badge bg-info text-dark">@Model.FieldType.PlayerCount người</span>
+                            </dd>
+
+                            <dt class="col-sm-4">Vị trí:</dt>
+                            <dd class="col-sm-8">
+                                <i class="bi bi-geo-alt text-danger"></i> @Model.Location
+                            </dd>
+
+                            <dt class="col-sm-4">Mô tả:</dt>
+                            <dd class="col-sm-8">@Model.Description</dd>
+
+                            <dt class="col-sm-4">Trạng thái:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.IsAvailable)
+                                {
+                                    <span class="badge bg-success">Đang hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Tạm ngưng</span>
+                                }
+                            </dd>
+
+                            <dt class="col-sm-4">Khung giờ:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-secondary">@Model.TimeSlots.Count khung giờ</span>
+                            </dd>
+                        </dl>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 mt-4">
+                            <a asp-controller="TimeSlots" asp-action="Index" asp-route-fieldId="@Model.Id"
+                               class="btn btn-primary">
+                                <i class="bi bi-clock"></i> Quản lý khung giờ (@Model.TimeSlots.Count)
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                                <i class="bi bi-pencil"></i> Chỉnh sửa
+                            </a>
+                            <form asp-action="ToggleAvailability" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn @(Model.IsAvailable ? "btn-secondary" : "btn-success") w-100">
+                                    <i class="bi @(Model.IsAvailable ? "bi-pause" : "bi-play")"></i>
+                                    @(Model.IsAvailable ? "Tạm ngưng sân" : "Kích hoạt sân")
+                                </button>
+                            </form>
+                            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">
+                                <i class="bi bi-trash"></i> Xóa sân
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card bg-primary text-white shadow">
+                    <div class="card-body text-center">
+                        <h6>Tổng lượt đặt</h6>
+                        <h2>@ViewBag.TotalBookings</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-success text-white shadow">
+                    <div class="card-body text-center">
+                        <h6>Đã hoàn thành</h6>
+                        <h2>@ViewBag.CompletedBookings</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card bg-info text-white shadow">
+                    <div class="card-body text-center">
+                        <h6>Doanh thu</h6>
+                        <h2>@ViewBag.Revenue.ToString("N0") VNĐ</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Slots -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-clock"></i> Bảng giá khung giờ</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.TimeSlots.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Khung giờ</th>
+                                    <th>Giá (VNĐ/giờ)</th>
+                                    <th>Loại</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var slot in Model.TimeSlots.OrderBy(ts => ts.StartTime))
+                                {
+                                    <tr>
+                                        <td>
+                                            <i class="bi bi-clock"></i>
+                                            @slot.StartTime.ToString(@"hh\:mm") - @slot.EndTime.ToString(@"hh\:mm")
+                                        </td>
+                                        <td class="fw-bold text-success">@slot.PricePerHour.ToString("N0")</td>
+                                        <td>
+                                            @if (slot.IsWeekend)
+                                            {
+                                                <span class="badge bg-warning text-dark">Cuối tuần</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info text-dark">Ngày thường</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Chưa có khung giờ nào.
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Recent Bookings -->
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Lịch đặt gần đây</h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Bookings.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã đơn</th>
+                                    <th>Khách hàng</th>
+                                    <th>Ngày chơi</th>
+                                    <th>Giá</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var booking in Model.Bookings.OrderByDescending(b => b.BookingDate).Take(10))
+                                {
+                                    <tr>
+                                        <td><strong>#@booking.Id</strong></td>
+                                        <td>@booking.User.UserName</td>
+                                        <td>@booking.PlayDate.ToString("dd/MM/yyyy")</td>
+                                        <td class="text-success fw-bold">@booking.TotalPrice.ToString("N0") VNĐ</td>
+                                        <td>
+                                            @switch (booking.Status)
+                                            {
+                                                case FootballFieldBooking_New.Models.BookingStatus.Pending:
+                                                    <span class="badge bg-warning text-dark">Chờ</span>
+                                                    break;
+                                                case FootballFieldBooking_New.Models.BookingStatus.Confirmed:
+                                                    <span class="badge bg-success">Xác nhận</span>
+                                                    break;
+                                                case FootballFieldBooking_New.Models.BookingStatus.Cancelled:
+                                                    <span class="badge bg-danger">Hủy</span>
+                                                    break;
+                                                case FootballFieldBooking_New.Models.BookingStatus.Completed:
+                                                    <span class="badge bg-info">Hoàn thành</span>
+                                                    break;
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> Chưa có lịch đặt nào.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,59 @@
+﻿@model FootballFieldBooking_New.Models.TimeSlot
+
+@{
+    ViewData["Title"] = "Chỉnh sửa khung giờ";
+    var field = ViewBag.Field as FootballFieldBooking_New.Models.FootballField;
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="bi bi-pencil"></i> Chỉnh sửa khung giờ</h4>
+                <small>@field.Name - @field.FieldType.Name</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="Edit" method="post">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="FootballFieldId" />
+
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Giờ bắt đầu</label>
+                            <input asp-for="StartTime" type="time" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Giờ kết thúc</label>
+                            <input asp-for="EndTime" type="time" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giá (VNĐ/giờ)</label>
+                        <input asp-for="PricePerHour" type="number" class="form-control"
+                               min="0" step="1000" required />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsWeekend" class="form-check-input" />
+                        <label class="form-check-label" for="IsWeekend">
+                            Khung giờ cuối tuần (giá cao hơn)
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-warning btn-lg">
+                            <i class="bi bi-check-circle"></i> Cập nhật
+                        </button>
+                        <a asp-action="Index" asp-route-fieldId="@field.Id" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+x`

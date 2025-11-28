@@ -1,0 +1,78 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.Booking>
+
+@{
+    ViewData["Title"] = "Lịch sử đặt sân";
+}
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-clock-history"></i> @ViewData["Title"]</h2>
+
+    <!-- Stats -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <h5>Chờ xác nhận</h5>
+                    <h2>@ViewBag.PendingCount</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5>Đã xác nhận</h5>
+                    <h2>@ViewBag.ConfirmedCount</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Sân</th>
+                        <th>Ngày chơi</th>
+                        <th>Giờ</th>
+                        <th>Giá</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var booking in Model)
+                    {
+                        <tr>
+                            <td><strong>#@booking.Id</strong></td>
+                            <td>@booking.FootballField.Name</td>
+                            <td>@booking.PlayDate.ToString("dd/MM/yyyy")</td>
+                            <td>@booking.TimeSlot.StartTime.ToString(@"hh\:mm") - @booking.TimeSlot.EndTime.ToString(@"hh\:mm")</td>
+                            <td><price amount="@booking.TotalPrice" color="success"></price></td>
+                            <td>
+                                <status-badge status="@booking.Status" show-icon="true"></status-badge>
+                            </td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@booking.Id" class="btn btn-sm btn-info">
+                                    Chi tiết
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        @await Html.PartialAsync("_EmptyState", null, new ViewDataDictionary(ViewData) {
+    { "Icon", "bi-calendar-x" },
+    { "Title", "Chưa có lịch đặt sân" },
+    { "Message", "Bạn chưa đặt sân nào. Hãy tìm và đặt sân yêu thích của bạn ngay!" },
+    { "ActionText", "Đặt sân ngay" },
+    { "ActionUrl", "/FootballFields" }
+    })
+    }
+</div>

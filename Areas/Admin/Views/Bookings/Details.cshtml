@@ -1,0 +1,253 @@
+﻿@model FootballFieldBooking_New.Models.Booking
+
+@{
+    ViewData["Title"] = "Chi tiết đơn đặt";
+}
+
+<div class="row">
+    <div class="col-md-10 offset-md-1">
+        <!-- Back Button -->
+        <div class="mb-3">
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Quay lại danh sách
+            </a>
+        </div>
+
+        <!-- Status Alert -->
+        @switch (Model.Status)
+        {
+            case BookingStatus.Pending:
+                <div class="alert alert-warning">
+                    <i class="bi bi-clock-history"></i>
+                    <strong>Đang chờ xác nhận</strong> - Vui lòng xác nhận hoặc hủy đơn.
+                </div>
+                break;
+            case BookingStatus.Confirmed:
+                <div class="alert alert-success">
+                    <i class="bi bi-check-circle"></i>
+                    <strong>Đã xác nhận</strong> - Đơn đặt đã được xác nhận thành công.
+                </div>
+                break;
+            case BookingStatus.Cancelled:
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle"></i>
+                    <strong>Đã hủy</strong> - Đơn đặt này đã bị hủy.
+                </div>
+                break;
+            case BookingStatus.Completed:
+                <div class="alert alert-info">
+                    <i class="bi bi-check-all"></i>
+                    <strong>Hoàn thành</strong> - Đơn đặt đã hoàn thành.
+                </div>
+                break;
+        }
+
+        <!-- Booking Info -->
+        <div class="card shadow mb-4">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="bi bi-receipt"></i> Thông tin đơn đặt #@Model.Id</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-person"></i> Khách hàng</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Tên:</dt>
+                            <dd class="col-sm-8">@Model.User.UserName</dd>
+
+                            <dt class="col-sm-4">Email:</dt>
+                            <dd class="col-sm-8">@Model.User.Email</dd>
+
+                            @if (!string.IsNullOrEmpty(Model.User.PhoneNumber))
+                            {
+                                <dt class="col-sm-4">SĐT:</dt>
+                                <dd class="col-sm-8">@Model.User.PhoneNumber</dd>
+                            }
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-info-circle"></i> Thông tin đơn</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Ngày đặt:</dt>
+                            <dd class="col-sm-8">@Model.BookingDate.ToString("dd/MM/yyyy HH:mm")</dd>
+
+                            <dt class="col-sm-4">Trạng thái:</dt>
+                            <dd class="col-sm-8">
+                                @switch (Model.Status)
+                                {
+                                    case BookingStatus.Pending:
+                                        <span class="badge bg-warning text-dark">Chờ xác nhận</span>
+                                        break;
+                                    case BookingStatus.Confirmed:
+                                        <span class="badge bg-success">Đã xác nhận</span>
+                                        break;
+                                    case BookingStatus.Cancelled:
+                                        <span class="badge bg-danger">Đã hủy</span>
+                                        break;
+                                    case BookingStatus.Completed:
+                                        <span class="badge bg-info">Hoàn thành</span>
+                                        break;
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Field Info -->
+                <h5><i class="bi bi-grid"></i> Thông tin sân</h5>
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                        <dl class="row">
+                            <dt class="col-sm-3">Sân:</dt>
+                            <dd class="col-sm-9">
+                                <strong>@Model.FootballField.Name</strong>
+                                <span class="badge bg-success">@Model.FootballField.FieldType.Name</span>
+                            </dd>
+
+                            <dt class="col-sm-3">Vị trí:</dt>
+                            <dd class="col-sm-9">@Model.FootballField.Location</dd>
+
+                            <dt class="col-sm-3">Ngày chơi:</dt>
+                            <dd class="col-sm-9">
+                                <strong>@Model.PlayDate.ToString("dd/MM/yyyy")</strong>
+                                (@Model.PlayDate.ToString("dddd", new System.Globalization.CultureInfo("vi-VN")))
+                            </dd>
+
+                            <dt class="col-sm-3">Giờ chơi:</dt>
+                            <dd class="col-sm-9">
+                                <strong>@Model.TimeSlot.StartTime.ToString(@"hh\:mm") - @Model.TimeSlot.EndTime.ToString(@"hh\:mm")</strong>
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-4">
+                        <img src="@Model.FootballField.ImageUrl" class="img-fluid rounded"
+                             alt="@Model.FootballField.Name"
+                             onerror="this.src='/images/default-field.jpg'">
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Payment Info -->
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="bi bi-cash-coin"></i> Thanh toán</h5>
+                        <dl class="row">
+                            <dt class="col-sm-4">Tổng tiền:</dt>
+                            <dd class="col-sm-8">
+                                <h4 class="text-success mb-0">@Model.TotalPrice.ToString("N0") VNĐ</h4>
+                            </dd>
+
+                            <dt class="col-sm-4">Trạng thái:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.Payment != null && Model.Payment.IsPaid)
+                                {
+                                    <span class="badge bg-success fs-6">Đã thanh toán</span>
+                                    <p class="mb-0 mt-2">
+                                        <small>
+                                            Phương thức: @Model.Payment.Method<br>
+                                            Ngày: @Model.Payment.PaymentDate.ToString("dd/MM/yyyy HH:mm")
+                                        </small>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark fs-6">Chưa thanh toán</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <h5><i class="bi bi-chat-left-text"></i> Ghi chú</h5>
+                            <p class="border p-3 bg-light rounded">@Model.Notes</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="card shadow">
+            <div class="card-body">
+                <div class="row g-2">
+                    @if (Model.Status == BookingStatus.Pending)
+                    {
+                        <div class="col-md-6">
+                            <form asp-action="Confirm" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-success w-100 btn-lg"
+                                        onclick="return confirm('Xác nhận đơn đặt này?')">
+                                    <i class="bi bi-check-circle"></i> Xác nhận đơn
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger w-100 btn-lg"
+                                    data-bs-toggle="modal" data-bs-target="#cancelModal">
+                                <i class="bi bi-x-circle"></i> Hủy đơn
+                            </button>
+                        </div>
+                    }
+
+                    @if (Model.Status == BookingStatus.Confirmed)
+                    {
+                        <div class="col-md-6">
+                            <form asp-action="Complete" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-primary w-100 btn-lg"
+                                        onclick="return confirm('Xác nhận hoàn thành đơn này?')">
+                                    <i class="bi bi-check-all"></i> Hoàn thành
+                                </button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-danger w-100 btn-lg"
+                                    data-bs-toggle="modal" data-bs-target="#cancelModal">
+                                <i class="bi bi-x-circle"></i> Hủy đơn
+                            </button>
+                        </div>
+                    }
+
+                    @if (Model.Status == BookingStatus.Cancelled || Model.Status == BookingStatus.Pending)
+                    {
+                        <div class="col-md-12">
+                            <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                                <button type="submit" class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('Xóa vĩnh viễn đơn này?')">
+                                    <i class="bi bi-trash"></i> Xóa đơn
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-action="Cancel" asp-route-id="@Model.Id" method="post">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Hủy đơn đặt</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Lý do hủy:</label>
+                        <textarea name="reason" class="form-control" rows="3"
+                                  placeholder="Nhập lý do hủy đơn..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-danger">Xác nhận hủy</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

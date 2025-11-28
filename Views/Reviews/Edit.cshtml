@@ -1,0 +1,93 @@
+﻿@model FootballFieldBooking_New.Models.Review
+
+@{
+    ViewData["Title"] = "Chỉnh sửa đánh giá";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card shadow">
+                <div class="card-header bg-warning">
+                    <h4 class="mb-0">
+                        <i class="bi bi-pencil"></i> Chỉnh sửa đánh giá
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-3">
+                        <strong>Sân:</strong> @Model.FootballField.Name
+                    </div>
+
+                    <form asp-action="Edit" method="post">
+                        <input type="hidden" asp-for="Id" />
+
+                        <!-- Rating -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-star-fill text-warning"></i> Đánh giá <span class="text-danger">*</span>
+                            </label>
+                            <div class="rating-input">
+                                @for (int i = 5; i >= 1; i--)
+                                {
+                                    <input type="radio" name="rating" value="@i" id="star@(i)"
+                                           checked="@(Model.Rating == i)" required>
+                                    <label for="star@(i)">★</label>
+                                }
+                            </div>
+                            <small class="text-muted">Nhấp vào sao để đánh giá</small>
+                        </div>
+
+                        <!-- Comment -->
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="bi bi-chat-left-text"></i> Nhận xét <span class="text-danger">*</span>
+                            </label>
+                            <textarea name="comment" class="form-control" rows="5"
+                                      placeholder="Chia sẻ trải nghiệm của bạn về sân này..."
+                                      required minlength="10" maxlength="1000">@Model.Comment</textarea>
+                            <small class="text-muted">Tối thiểu 10 ký tự</small>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-check-circle"></i> Cập nhật
+                            </button>
+                            <a asp-controller="FootballFields" asp-action="Details"
+                               asp-route-id="@Model.FootballFieldId"
+                               class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Quay lại
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating-input {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: center;
+        gap: 5px;
+        font-size: 3rem;
+    }
+
+        .rating-input input {
+            display: none;
+        }
+
+        .rating-input label {
+            cursor: pointer;
+            color: #ddd;
+            transition: color 0.2s;
+        }
+
+            .rating-input input:checked ~ label,
+            .rating-input label:hover,
+            .rating-input label:hover ~ label {
+                color: #ffc107;
+            }
+</style>

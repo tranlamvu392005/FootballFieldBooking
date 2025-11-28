@@ -1,0 +1,87 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.FootballField>
+
+@{
+    ViewData["Title"] = "Danh sách sân bóng";
+}
+
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-list-ul"></i> @ViewData["Title"]</h2>
+
+    <!-- Search & Filter Form -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form asp-action="Index" method="get">
+                <div class="row g-3">
+                    <div class="col-md-5">
+                        <input type="text" name="searchTerm" value="@ViewData["CurrentSearch"]"
+                               class="form-control" placeholder="Tìm kiếm sân theo tên, vị trí...">
+                    </div>
+                    <div class="col-md-4">
+                        <select name="fieldTypeId" class="form-select">
+                            <option value="">-- Tất cả loại sân --</option>
+                            @foreach (var type in ViewBag.FieldTypes)
+                            {
+                                <option value="@type.Id" selected="@(ViewData["CurrentFieldType"]?.ToString() == type.Id.ToString())">
+                                    @type.Name (@type.PlayerCount người)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-search"></i> Tìm kiếm
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TempData Messages -->
+    @if (TempData["Info"] != null)
+    {
+        <div class="alert alert-info alert-dismissible fade show">
+            <i class="bi bi-info-circle"></i> @TempData["Info"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Fields Grid -->
+    @if (Model.Any())
+    {
+        <div class="row g-4">
+            @foreach (var field in Model)
+            {
+                <div class="col-md-4">
+                    <field-card field-id="@field.Id"
+                                field-name="@field.Name"
+                                field-type="@field.FieldType.Name"
+                                location="@field.Location"
+                                image-url="@field.ImageUrl"
+                                description="@field.Description"
+                                min-price="@(field.TimeSlots.Any() ? field.TimeSlots.Min(ts => ts.PricePerHour) : 0)"
+                                is-available="@field.IsAvailable"
+                                show-booking-button="true">
+                    </field-card>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle"></i> Không có sân nào.
+        </div>
+    }
+</div>
+
+<style>
+    .hover-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+        }
+</style>

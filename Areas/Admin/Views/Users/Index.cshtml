@@ -1,0 +1,131 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Areas.Admin.Controllers.UserViewModel>
+
+@{
+    ViewData["Title"] = "Quản lý tài khoản";
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="bi bi-people"></i> Quản lý người dùng</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="/Identity/Account/Register" class="btn btn-success">
+            <i class="bi bi-person-plus"></i> Thêm người dùng
+        </a>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-5">
+                    <input type="text" name="searchTerm" value="@ViewData["CurrentSearch"]"
+                           class="form-control" placeholder="Tìm kiếm email, username...">
+                </div>
+                <div class="col-md-4">
+                    <select name="role" class="form-select">
+                        <option value="">-- Tất cả vai trò --</option>
+                        <option value="Admin" selected="@(ViewData["CurrentRole"]?.ToString() == "Admin")">Admin</option>
+                        <option value="Customer" selected="@(ViewData["CurrentRole"]?.ToString() == "Customer")">Customer</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Tìm kiếm
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card shadow">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>SĐT</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Ngày tạo</th>
+                            <th width="150">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@user.FullName</strong>
+                                    <br>
+                                    <small class="text-muted">@user.UserName</small>
+                                </td>
+                                <td>
+                                    @user.Email
+                                    @if (user.EmailConfirmed)
+                                    {
+                                        <i class="bi bi-check-circle text-success" title="Đã xác thực"></i>
+                                    }
+                                </td>
+                                <td>@user.PhoneNumber</td>
+                                <td>
+                                    @if (user.Roles.Contains("Admin"))
+                                    {
+                                        <span class="badge bg-danger">Admin</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info">Customer</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (user.LockoutEnd != null && user.LockoutEnd > DateTimeOffset.Now)
+                                    {
+                                        <span class="badge bg-danger">Đã khóa</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-success">Hoạt động</span>
+                                    }
+                                </td>
+                                <td>@user.CreatedDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Details" asp-route-id="@user.Id"
+                                           class="btn btn-info" title="Chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@user.Id"
+                                           class="btn btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@user.Id" method="post" class="d-inline"
+                                              onsubmit="return confirm('Xóa người dùng này?')">
+                                            <button type="submit" class="btn btn-danger btn-sm" title="Xóa">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Không tìm thấy người dùng nào.
+            </div>
+        }
+    </div>
+</div>

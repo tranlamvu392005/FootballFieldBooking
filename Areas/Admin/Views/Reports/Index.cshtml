@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Báo cáo tổng hợp";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4"><i class="bi bi-graph-up"></i> Báo cáo tổng hợp</h2>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-success">
+                <div class="card-body">
+                    <h6 class="text-muted">Tổng doanh thu</h6>
+                    <h4 class="text-success fw-bold">@ViewBag.TotalRevenue.ToString("N0") VNĐ</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-primary">
+                <div class="card-body">
+                    <h6 class="text-muted">Doanh thu tháng này</h6>
+                    <h4 class="text-primary fw-bold">@ViewBag.MonthlyRevenue.ToString("N0") VNĐ</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-warning">
+                <div class="card-body">
+                    <h6 class="text-muted">Tổng lượt đặt sân</h6>
+                    <h4 class="text-warning fw-bold">@ViewBag.TotalBookings</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-danger">
+                <div class="card-body">
+                    <h6 class="text-muted">Đang chờ xác nhận</h6>
+                    <h4 class="text-danger fw-bold">@ViewBag.PendingBookings</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-info">
+                <div class="card-body">
+                    <h6 class="text-muted">Khách hàng mới tháng này</h6>
+                    <h4 class="text-info fw-bold">@ViewBag.NewCustomers</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-secondary">
+                <div class="card-body">
+                    <h6 class="text-muted">Sân được đặt nhiều nhất</h6>
+                    <h4 class="fw-bold">@ViewBag.TopField</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        <h4><i class="bi bi-bar-chart-line"></i> Doanh thu theo tháng</h4>
+        <canvas id="revenueChart" height="120"></canvas>
+    </div>
+
+    <div class="mt-5">
+        <h4><i class="bi bi-pie-chart"></i> Tỷ lệ đặt theo loại sân</h4>
+        <canvas id="fieldTypeChart" height="100"></canvas>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx1 = document.getElementById('revenueChart');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.MonthLabels)),
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: @Html.Raw(Json.Serialize(ViewBag.MonthRevenue)),
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        const ctx2 = document.getElementById('fieldTypeChart');
+        new Chart(ctx2, {
+            type: 'pie',
+            data: {
+                labels: @Html.Raw(Json.Serialize(ViewBag.FieldTypeLabels)),
+                datasets: [{
+                    label: 'Lượt đặt',
+                    data: @Html.Raw(Json.Serialize(ViewBag.FieldTypeCounts)),
+                    borderWidth: 1
+                }]
+            }
+        });
+    </script>
+}

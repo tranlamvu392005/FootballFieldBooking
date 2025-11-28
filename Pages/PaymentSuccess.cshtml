@@ -1,0 +1,116 @@
+﻿@page
+@model FootballFieldBooking_New.Pages.PaymentSuccessModel
+@{
+    ViewData["Title"] = "Thanh toán thành công";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <!-- Success Message -->
+            <div class="text-center mb-4">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                </div>
+                <h2 class="text-success">Thanh toán thành công!</h2>
+                <p class="text-muted">Đơn đặt sân của bạn đã được xác nhận</p>
+            </div>
+
+            <!-- Booking Info Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="bi bi-receipt"></i> Thông tin đơn đặt
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Mã đơn:</dt>
+                        <dd class="col-sm-8"><strong>#@Model.Booking.Id</strong></dd>
+
+                        <dt class="col-sm-4">Sân:</dt>
+                        <dd class="col-sm-8">@Model.Booking.FootballField.Name</dd>
+
+                        <dt class="col-sm-4">Loại sân:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge bg-success">@Model.Booking.FootballField.FieldType.Name</span>
+                        </dd>
+
+                        <dt class="col-sm-4">Ngày chơi:</dt>
+                        <dd class="col-sm-8">@Model.Booking.PlayDate.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4">Giờ chơi:</dt>
+                        <dd class="col-sm-8">
+                            @Model.Booking.TimeSlot.StartTime.ToString(@"hh\:mm") -
+                            @Model.Booking.TimeSlot.EndTime.ToString(@"hh\:mm")
+                        </dd>
+
+                        <dt class="col-sm-4">Tổng tiền:</dt>
+                        <dd class="col-sm-8">
+                            <price amount="@Model.Booking.TotalPrice" color="success" size="normal"></price>
+                        </dd>
+
+                        <dt class="col-sm-4">Phương thức:</dt>
+                        <dd class="col-sm-8">
+                            @switch (Model.Payment.Method)
+                            {
+                                case PaymentMethod.Cash:
+                                    <span><i class="bi bi-cash"></i> Tiền mặt</span>
+                                    break;
+                                case PaymentMethod.BankTransfer:
+                                    <span><i class="bi bi-bank"></i> Chuyển khoản</span>
+                                    break;
+                                case PaymentMethod.EWallet:
+                                    <span><i class="bi bi-wallet2"></i> Ví điện tử</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt class="col-sm-4">Trạng thái:</dt>
+                        <dd class="col-sm-8">
+                            <status-badge status="@Model.Booking.Status" show-icon="true"></status-badge>
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Instructions -->
+            <alert type="info" dismissible="false">
+                <strong>Lưu ý quan trọng:</strong>
+                <ul class="mb-0 mt-2">
+                    <li>Vui lòng đến sân đúng giờ</li>
+                    <li>Mang theo giấy tờ tùy thân</li>
+                    @if (Model.Payment.Method == PaymentMethod.Cash)
+                    {
+                        <li>Thanh toán tiền mặt khi đến sân</li>
+                    }
+                    @if (Model.Payment.Method == PaymentMethod.BankTransfer)
+                    {
+                        <li>Đã chuyển khoản, vui lòng giữ biên lai</li>
+                    }
+                </ul>
+            </alert>
+
+            <!-- Actions -->
+            <div class="d-grid gap-2">
+                <a href="/Bookings/Details/@Model.Booking.Id" class="btn btn-primary btn-lg">
+                    <i class="bi bi-eye"></i> Xem chi tiết đơn
+                </a>
+                <a href="/FootballFields" class="btn btn-outline-success">
+                    <i class="bi bi-plus-circle"></i> Đặt sân mới
+                </a>
+                <a href="/Bookings" class="btn btn-outline-secondary">
+                    <i class="bi bi-list"></i> Lịch sử đặt sân
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Confetti effect (optional)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add confetti animation if you have a library
+        console.log('Payment successful!');
+    });
+</script>

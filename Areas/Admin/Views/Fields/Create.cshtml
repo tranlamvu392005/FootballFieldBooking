@@ -1,0 +1,78 @@
+﻿@model FootballFieldBooking_New.Models.FootballField
+
+@{
+    ViewData["Title"] = "Thêm sân mới";
+}
+
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> @ViewData["Title"]</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label">Tên sân <span class="text-danger">*</span></label>
+                        <input asp-for="Name" class="form-control" placeholder="VD: Sân A1" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="FieldTypeId" class="form-label">Loại sân <span class="text-danger">*</span></label>
+                        <select asp-for="FieldTypeId" class="form-select" asp-items="ViewBag.FieldTypeId">
+                            <option value="">-- Chọn loại sân --</option>
+                        </select>
+                        <span asp-validation-for="FieldTypeId" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Location" class="form-label">Vị trí <span class="text-danger">*</span></label>
+                        <input asp-for="Location" class="form-control" placeholder="VD: Khu A, Tầng 1" />
+                        <span asp-validation-for="Location" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label">Mô tả</label>
+                        <textarea asp-for="Description" class="form-control" rows="3"
+                                  placeholder="Mô tả về sân bóng..."></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImageUrl" class="form-label">URL ảnh</label>
+                        <input asp-for="ImageUrl" class="form-control" placeholder="/images/fields/san-a1.jpg" />
+                        <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                        <small class="text-muted">Để trống sẽ dùng ảnh mặc định</small>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input asp-for="IsAvailable" class="form-check-input" checked />
+                        <label asp-for="IsAvailable" class="form-check-label">
+                            Kích hoạt sân ngay
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Thêm sân
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,515 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.FootballField>
+
+@{
+    ViewData["Title"] = "Trang chủ";
+    // Lấy data từ ViewData
+    var totalFields = ViewData["TotalFields"];
+    var totalBookings = ViewData["TotalBookings"];
+}
+
+<!-- Hero Section với Parallax Effect -->
+<section class="hero-section-modern text-white mb-5">
+    <div class="hero-overlay"></div>
+    <div class="hero-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+    <div class="container text-center position-relative hero-content">
+        <div class="hero-badge mb-3">
+            <i class="bi bi-trophy-fill me-2"></i>
+            <span>Hệ thống đặt sân #1 Việt Nam</span>
+        </div>
+        <h1 class="display-3 fw-bold mb-3 hero-title">
+            @ViewBag.WelcomeMessage
+        </h1>
+        <p class="lead mb-4 hero-subtitle">
+            <i class="bi bi-lightning-charge-fill text-warning"></i>
+            Đặt sân nhanh chóng - Giá cả hợp lý - Chất lượng đảm bảo
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap hero-buttons">
+            <a href="@Url.Action("Index", "FootballFields")" class="btn btn-hero btn-light btn-lg shadow-lg">
+                <i class="bi bi-search me-2"></i>
+                <span>Tìm sân ngay</span>
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+            <a href="#featured-fields" class="btn btn-hero btn-outline-light btn-lg smooth-scroll">
+                <i class="bi bi-arrow-down-circle me-2"></i>
+                <span>Khám phá</span>
+            </a>
+        </div>
+
+        <!-- Quick Stats Mini -->
+        <div class="row mt-5 g-3 hero-stats">
+            <div class="col-md-4">
+                <div class="stat-mini">
+                    <div class="stat-icon">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <h3 class="stat-number">@totalFields+</h3>
+                    <p class="stat-label">Sân bóng</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-mini">
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h3 class="stat-number">@totalBookings+</h3>
+                    <p class="stat-label">Lượt đặt</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-mini">
+                    <div class="stat-icon">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <h3 class="stat-number">@ViewBag.AverageRating</h3>
+                    <p class="stat-label">Đánh giá trung bình</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-icon"></div>
+    </div>
+</section>
+
+<!-- Features Section với Icons -->
+<section class="features-section py-5 mb-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <h5 class="fw-bold">Đặt 24/7</h5>
+                    <p class="text-muted mb-0">Đặt sân mọi lúc mọi nơi</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-shield-check"></i>
+                    </div>
+                    <h5 class="fw-bold">Thanh toán an toàn</h5>
+                    <p class="text-muted mb-0">Bảo mật tuyệt đối</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-percent"></i>
+                    </div>
+                    <h5 class="fw-bold">Ưu đãi hấp dẫn</h5>
+                    <p class="text-muted mb-0">Giảm giá mọi khung giờ</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="feature-card text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-headset"></i>
+                    </div>
+                    <h5 class="fw-bold">Hỗ trợ 24/7</h5>
+                    <p class="text-muted mb-0">Luôn sẵn sàng phục vụ</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success/Error Messages -->
+@if (ViewBag.SuccessMessage != null)
+{
+    <div class="container">
+        <div class="alert alert-success-modern alert-dismissible fade show" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="alert-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="flex-grow-1 ms-3">
+                    <h6 class="mb-0 fw-bold">Thành công!</h6>
+                    <p class="mb-0">@ViewBag.SuccessMessage</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        </div>
+    </div>
+}
+
+<!-- Featured Fields với Layout Mới -->
+<section id="featured-fields" class="featured-fields-modern py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-success-gradient mb-3 px-4 py-2">
+                <i class="bi bi-star-fill me-2"></i>Sân nổi bật
+            </span>
+            <h2 class="display-5 fw-bold mb-3">Sân được yêu thích nhất</h2>
+            <p class="lead text-muted">Những sân bóng chất lượng cao với đầy đủ tiện nghi</p>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var field in Model)
+            {
+                <div class="col-lg-4 col-md-6">
+                    <div class="field-card-modern">
+                        <div class="field-image-wrapper">
+                            <img src="@field.ImageUrl" class="field-image" alt="@field.Name"
+                                 onerror="this.src='/images/default-field.jpg'">
+                            <div class="field-overlay">
+                                <a asp-controller="FootballFields" asp-action="Details" asp-route-id="@field.Id"
+                                   class="btn btn-light btn-sm">
+                                    <i class="bi bi-eye me-1"></i> Xem chi tiết
+                                </a>
+                            </div>
+                            <div class="field-badge">
+                                <i class="bi bi-lightning-charge-fill"></i>
+                                <span>Hot</span>
+                            </div>
+                        </div>
+                        <div class="field-content">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="field-title mb-0">@field.Name</h5>
+                                <span class="badge badge-type">@field.FieldType.Name</span>
+                            </div>
+                            <p class="field-location mb-2">
+                                <i class="bi bi-geo-alt-fill text-danger me-1"></i>
+                                @field.Location
+                            </p>
+                            <p class="field-description">@field.Description</p>
+
+                            <div class="field-footer">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="rating">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        <i class="bi bi-star-half text-warning"></i>
+                                        <span class="ms-1 text-muted small">(4.5)</span>
+                                    </div>
+                                    <a asp-controller="FootballFields" asp-action="Details" asp-route-id="@field.Id"
+                                       class="btn btn-success-gradient btn-sm">
+                                        <i class="bi bi-calendar-check me-1"></i>
+                                        Đặt ngay
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-5">
+            <a asp-controller="FootballFields" asp-action="Index" class="btn btn-outline-success-gradient btn-lg">
+                Xem tất cả sân
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section với Animation -->
+<section class="stats-modern py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container">
+        <div class="row text-center text-white g-4">
+            <div class="col-md-3 col-sm-6"> 
+                <div class="stat-card-modern">
+                    <div class="stat-icon-large mb-3">
+                        <i class="bi bi-trophy-fill"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold mb-2 counter" data-target="@totalFields">0</h2>
+                    <p class="lead mb-0">Sân bóng chất lượng</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card-modern">
+                    <div class="stat-icon-large mb-3">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold mb-2 counter" data-target="@totalBookings">0</h2>
+                    <p class="lead mb-0">Lượt đặt thành công</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card-modern">
+                    <div class="stat-icon-large mb-3">
+                        <i class="bi bi-grid-3x3-gap-fill"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold mb-2 counter" data-target="@ViewBag.FieldTypes.Count">0</h2>
+                    <p class="lead mb-0">Loại sân đa dạng</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card-modern">
+                    <div class="stat-icon-large mb-3">
+                        <i class="bi bi-star-fill"></i>
+                    </div>
+                    <h2 class="display-4 fw-bold mb-2">@ViewBag.AverageRating</h2>
+                    <p class="lead mb-0">@ViewBag.TotalReviews đánh giá</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- View Components Section -->
+<section class="view-components-modern py-5 bg-light-gradient">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-primary-gradient mb-3 px-4 py-2">
+                <i class="bi bi-lightning-fill me-2"></i>Thông tin nổi bật
+            </span>
+            <h2 class="display-5 fw-bold mb-3">Cập nhật liên tục</h2>
+            <p class="lead text-muted">Theo dõi sân bóng và lịch đặt của bạn</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Popular Fields Component -->
+            <div class="col-lg-6 col-md-12">
+                <div class="component-wrapper">
+                    @await Component.InvokeAsync("PopularFields", new { count = 5 })
+                </div>
+            </div>
+
+            <!-- Booking Summary & Notifications -->
+            <div class="col-lg-6 col-md-12">
+                @if (User.Identity?.IsAuthenticated == true)
+                {
+                    <!-- Booking Summary -->
+                    <div class="mb-4 component-wrapper">
+                        @await Component.InvokeAsync("BookingSummary")
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="component-wrapper">
+                        @await Component.InvokeAsync("Notification")
+                    </div>
+                }
+                else
+                {
+                    <!-- Login Prompt Card với Design Mới -->
+                    <div class="login-prompt-card">
+                        <div class="login-prompt-icon">
+                            <i class="bi bi-person-circle"></i>
+                        </div>
+                        <h3 class="mb-3 fw-bold">Trải nghiệm đầy đủ tính năng</h3>
+                        <p class="text-muted mb-4">
+                            Đăng nhập để quản lý lịch đặt sân, nhận thông báo ưu đãi và nhiều hơn nữa
+                        </p>
+                        <div class="login-benefits mb-4">
+                            <div class="benefit-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Quản lý lịch đặt dễ dàng</span>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Nhận thông báo ưu đãi đặc biệt</span>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>Lưu sân yêu thích</span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 justify-content-center">
+                            <a href="/Identity/Account/Login" class="btn btn-success-gradient btn-lg shadow">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>
+                                Đăng nhập
+                            </a>
+                            <a href="/Identity/Account/Register" class="btn btn-outline-success btn-lg">
+                                <i class="bi bi-person-plus me-2"></i>
+                                Đăng ký
+                            </a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="testimonials-section py-5 mb-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="badge bg-warning text-dark mb-3 px-4 py-2">
+                <i class="bi bi-chat-quote-fill me-2"></i>Đánh giá
+            </span>
+            <h2 class="display-5 fw-bold mb-3">Khách hàng nói gì về chúng tôi</h2>
+        </div>
+
+        <div class="row g-4">
+            @if (ViewBag.TopReviews != null && ((List<FootballFieldBooking_New.Models.Review>)ViewBag.TopReviews).Count > 0)
+            {
+                @foreach (var review in (List<FootballFieldBooking_New.Models.Review>)ViewBag.TopReviews)
+                {
+                    <div class="col-md-4">
+                        <div class="testimonial-card">
+                            <div class="testimonial-rating mb-3">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                }
+                            </div>
+                            <p class="testimonial-text">"@review.Comment"</p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">
+                                    @if (review.User?.Email != null)
+                                    {
+                                        @review.User.Email.Substring(0, Math.Min(2, review.User.Email.Length)).ToUpper()
+                                    }
+                                    else
+                                    {
+                                        <text>KH</text>
+                                    }
+                                </div>
+                                <div>
+                                    <h6 class="mb-0">
+                                        @if (review.User?.Email != null)
+                                        {
+                                            @review.User.Email.Split('@')[0]
+                                        }
+                                        else
+                                        {
+                                            <text>Khách hàng</text>
+                                        }
+                                    </h6>
+                                    <small class="text-muted">@review.CreatedDate.ToString("dd/MM/yyyy")</small>
+                                </div>
+                            </div>
+                            @if (review.FootballField != null)
+                            {
+                                <div class="mt-2">
+                                    <small class="text-muted">
+                                        <i class="bi bi-geo-alt-fill"></i> @review.FootballField.Name
+                                    </small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <!-- Không có review thì hiển thị thông báo -->
+                <div class="col-12 text-center py-5">
+                    <i class="bi bi-chat-quote" style="font-size: 4rem; color: #e0e0e0;"></i>
+                    <p class="text-muted mt-3 mb-0">Chưa có đánh giá từ khách hàng</p>
+                </div>
+            }
+        </div>
+</section>
+
+<!-- Newsletter Subscription với Design Mới -->
+<section class="newsletter-modern py-5">
+    <div class="container">
+        <div class="newsletter-wrapper">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="newsletter-icon mb-3">
+                        <i class="bi bi-envelope-heart-fill"></i>
+                    </div>
+                    <h2 class="fw-bold mb-3">Nhận tin khuyến mãi đặc biệt</h2>
+                    <p class="lead mb-0">Đăng ký để nhận thông báo về các chương trình ưu đãi, giảm giá và sự kiện mới nhất</p>
+                </div>
+                <div class="col-lg-6">
+                    <form asp-action="Subscribe" method="post" class="newsletter-form">
+                        <div class="input-group input-group-lg">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-envelope"></i>
+                            </span>
+                            <input type="email" name="email" class="form-control border-start-0 ps-0"
+                                   placeholder="Nhập email của bạn..." required>
+                            <button type="submit" class="btn btn-success-gradient">
+                                <i class="bi bi-send-fill me-2"></i>
+                                Đăng ký ngay
+                            </button>
+                        </div>
+                        <small class="text-muted d-block mt-2">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Chúng tôi cam kết bảo mật thông tin của bạn
+                        </small>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Counter Animation
+            $('.counter').each(function() {
+                const $this = $(this);
+                const target = parseInt($this.data('target'));
+
+                $this.prop('Counter', 0).animate({
+                    Counter: target
+                }, {
+                    duration: 2000,
+                    easing: 'swing',
+                    step: function(now) {
+                        $this.text(Math.ceil(now));
+                    }
+                });
+            });
+
+            // Smooth Scroll
+            $('.smooth-scroll').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this).attr('href');
+                $('html, body').animate({
+                    scrollTop: $(target).offset().top - 80
+                }, 800);
+            });
+
+            // Parallax Effect
+            $(window).on('scroll', function() {
+                const scrolled = $(window).scrollTop();
+                $('.hero-shapes').css('transform', 'translateY(' + (scrolled * 0.5) + 'px)');
+            });
+
+            // Scroll Reveal Animation
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.field-card-modern, .feature-card, .testimonial-card').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Field Card Hover Effect
+            $('.field-card-modern').on('mouseenter', function() {
+                $(this).find('.field-overlay').css('opacity', '1');
+            }).on('mouseleave', function() {
+                $(this).find('.field-overlay').css('opacity', '0');
+            });
+
+            // API Call
+            $.get('@Url.Action("GetFieldStats", "Home")', function(data) {
+                console.log('Field Stats:', data);
+            });
+        });
+    </script>
+}

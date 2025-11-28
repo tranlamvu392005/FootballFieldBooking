@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Tag Helpers Demo";
+}
+
+<div class="container my-5">
+    <h2><i class="bi bi-code-square"></i> Custom Tag Helpers Demo</h2>
+    <p class="text-muted">Minh họa các Custom Tag Helpers đã tạo</p>
+
+    <hr>
+
+    <!-- Status Badge -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>1. Status Badge Tag Helper</h5>
+        </div>
+        <div class="card-body">
+            <h6>Code:</h6>
+            <pre><code>&lt;status-badge status="BookingStatus.Pending" show-icon="true"&gt;&lt;/status-badge&gt;</code></pre>
+
+            <h6>Result:</h6>
+            <p>
+                <status-badge status="@BookingStatus.Pending" show-icon="true"></status-badge>
+                <status-badge status="@BookingStatus.Confirmed" show-icon="true"></status-badge>
+                <status-badge status="@BookingStatus.Cancelled" show-icon="true"></status-badge>
+                <status-badge status="@BookingStatus.Completed" show-icon="true"></status-badge>
+            </p>
+
+            <h6>Without Icon:</h6>
+            <p>
+                <status-badge status="@BookingStatus.Pending" show-icon="false"></status-badge>
+                <status-badge status="@BookingStatus.Confirmed" show-icon="false"></status-badge>
+            </p>
+        </div>
+    </div>
+
+    <!-- Price -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>2. Price Tag Helper</h5>
+        </div>
+        <div class="card-body">
+            <h6>Code:</h6>
+            <pre><code>&lt;price amount="350000" currency="VNĐ" color="success" size="normal"&gt;&lt;/price&gt;</code></pre>
+
+            <h6>Result:</h6>
+            <p>
+                <price amount="350000" color="success"></price>
+                <price amount="500000" color="primary" size="large"></price>
+                <price amount="200000" color="danger" size="small"></price>
+            </p>
+        </div>
+    </div>
+
+    <!-- TimeSlot Badge -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>3. TimeSlot Badge Tag Helper</h5>
+        </div>
+        <div class="card-body">
+            <h6>Code:</h6>
+            <pre><code>&lt;timeslot-badge start-time="TimeSpan.Parse('18:00')" end-time="TimeSpan.Parse('20:00')" is-weekend="false" is-booked="false"&gt;&lt;/timeslot-badge&gt;</code></pre>
+
+            <h6>Result:</h6>
+            <p>
+                <timeslot-badge start-time="@TimeSpan.Parse("18:00")" end-time="@TimeSpan.Parse("20:00")" is-weekend="false" is-booked="false"></timeslot-badge>
+                <timeslot-badge start-time="@TimeSpan.Parse("14:00")" end-time="@TimeSpan.Parse("16:00")" is-weekend="true" is-booked="false"></timeslot-badge>
+                <timeslot-badge start-time="@TimeSpan.Parse("20:00")" end-time="@TimeSpan.Parse("22:00")" is-weekend="false" is-booked="true"></timeslot-badge>
+            </p>
+        </div>
+    </div>
+
+    <!-- Alert -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>4. Alert Tag Helper</h5>
+        </div>
+        <div class="card-body">
+            <h6>Code:</h6>
+            <pre><code>&lt;alert type="success" dismissible="true"&gt;Thành công!&lt;/alert&gt;</code></pre>
+
+            <h6>Result:</h6>
+            <alert type="success" dismissible="true">Đặt sân thành công!</alert>
+            <alert type="danger" dismissible="true">Có lỗi xảy ra!</alert>
+            <alert type="warning" dismissible="true">Cảnh báo: Sân sắp hết chỗ!</alert>
+            <alert type="info" dismissible="false">Thông tin: Giảm giá 20% vào cuối tuần!</alert>
+        </div>
+    </div>
+
+    <!-- Field Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>5. Field Card Tag Helper</h5>
+        </div>
+        <div class="card-body">
+            <h6>Code:</h6>
+            <pre><code>&lt;field-card field-id="1" field-name="Sân A1" field-type="Sân 5 người" ...&gt;&lt;/field-card&gt;</code></pre>
+
+            <h6>Result:</h6>
+            <div class="row">
+                <div class="col-md-6">
+                    <field-card field-id="1"
+                                field-name="Sân Demo A1"
+                                field-type="Sân 5 người"
+                                location="Khu A, Tầng 1"
+                                image-url="/images/default-field.jpg"
+                                description="Sân cỏ nhân tạo chất lượng cao"
+                                min-price="300000"
+                                is-available="true"
+                                show-booking-button="true">
+                    </field-card>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

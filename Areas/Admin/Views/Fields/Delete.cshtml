@@ -1,0 +1,72 @@
+﻿@model FootballFieldBooking_New.Models.FootballField
+
+@{
+    ViewData["Title"] = "Xóa sân";
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Xác nhận xóa sân</h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    <strong>Cảnh báo!</strong> Hành động này không thể hoàn tác.
+                </div>
+
+                <h5 class="mb-3">Bạn có chắc muốn xóa sân này?</h5>
+
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">Tên sân:</dt>
+                            <dd class="col-sm-8"><strong>@Model.Name</strong></dd>
+
+                            <dt class="col-sm-4">Loại sân:</dt>
+                            <dd class="col-sm-8">
+                                <span class="badge bg-info">@Model.FieldType.Name</span>
+                            </dd>
+
+                            <dt class="col-sm-4">Vị trí:</dt>
+                            <dd class="col-sm-8">@Model.Location</dd>
+
+                            <dt class="col-sm-4">Trạng thái:</dt>
+                            <dd class="col-sm-8">
+                                @if (Model.IsAvailable)
+                                {
+                                    <span class="badge bg-success">Đang hoạt động</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Tạm ngưng</span>
+                                }
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <form asp-action="Delete" method="post">
+                    <input type="hidden" asp-for="Id" />
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-danger btn-lg">
+                            <i class="bi bi-trash"></i> Xác nhận xóa
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Hủy, quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Lưu ý:</strong> Nếu sân đã có lịch đặt, bạn nên <strong>Tạm ngưng</strong> thay vì xóa.
+        </div>
+    </div>
+</div>
+
+

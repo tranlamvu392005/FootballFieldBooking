@@ -1,0 +1,23 @@
+﻿@model dynamic
+
+@{
+    var icon = ViewData["Icon"] ?? "bi-inbox";
+    var title = ViewData["Title"] ?? "Không có dữ liệu";
+    var message = ViewData["Message"] ?? "Hiện tại chưa có dữ liệu nào";
+    var actionText = ViewData["ActionText"];
+    var actionUrl = ViewData["ActionUrl"];
+}
+
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="bi @icon text-muted" style="font-size: 5rem; opacity: 0.5;"></i>
+    </div>
+    <h4 class="text-muted mb-3">@title</h4>
+    <p class="text-muted mb-4">@message</p>
+    @if (actionText != null && actionUrl != null)
+    {
+        <a href="@actionUrl" class="btn btn-success btn-lg shadow">
+            <i class="bi bi-plus-circle"></i> @actionText
+        </a>
+    }
+</div>

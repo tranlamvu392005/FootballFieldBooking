@@ -1,0 +1,129 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Đăng nhập";
+}
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-header bg-success text-white text-center py-4">
+                    <h3 class="mb-0">
+                        <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                    </h3>
+                    <p class="mb-0 mt-2">Hệ thống đặt sân bóng</p>
+                </div>
+                <div class="card-body p-4">
+                    <form id="account" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label asp-for="Input.Email" class="form-label">
+                                <i class="bi bi-envelope"></i> Email
+                            </label>
+                            <input asp-for="Input.Email"
+                                   class="form-control form-control-lg"
+                                   autocomplete="username"
+                                   placeholder="admin@footballbooking.com"
+                                   required />
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label asp-for="Input.Password" class="form-label">
+                                <i class="bi bi-lock"></i> Mật khẩu
+                            </label>
+                            <input asp-for="Input.Password"
+                                   class="form-control form-control-lg"
+                                   type="password"
+                                   autocomplete="current-password"
+                                   placeholder="••••••••"
+                                   required />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <!-- Remember Me -->
+                        <div class="form-check mb-4">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            <label class="form-check-label" asp-for="Input.RememberMe">
+                                Ghi nhớ đăng nhập
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid mb-3">
+                            <button id="login-submit" type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng nhập
+                            </button>
+                        </div>
+
+                        <!-- Links -->
+                        <div class="text-center">
+                            <a asp-page="./ForgotPassword" class="text-muted">
+                                <i class="bi bi-question-circle"></i> Quên mật khẩu?
+                            </a>
+                        </div>
+                    </form>
+                </div>
+                <div class="card-footer bg-light text-center py-3">
+                    <p class="mb-0">
+                        Chưa có tài khoản?
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="text-success fw-bold">
+                            Đăng ký ngay
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Demo Account Info -->
+            <div class="card mt-3 border-info">
+                <div class="card-body bg-light">
+                    <h6 class="text-info"><i class="bi bi-info-circle"></i> Tài khoản demo:</h6>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <strong>Admin:</strong><br>
+                                admin@footballbooking.com<br>
+                                Admin@123456
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted">
+                                <strong>Customer:</strong><br>
+                                customer@test.com<br>
+                                Customer@123
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+    }
+
+    .card {
+        border-radius: 15px;
+    }
+
+    .card-header {
+        border-radius: 15px 15px 0 0 !important;
+    }
+
+    .form-control:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+</style>

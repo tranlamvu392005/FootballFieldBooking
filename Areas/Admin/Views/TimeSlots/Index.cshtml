@@ -1,0 +1,103 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.TimeSlot>
+
+@{
+    ViewData["Title"] = "Quản lý khung giờ";
+    var field = ViewBag.Field as FootballFieldBooking_New.Models.FootballField;
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="bi bi-clock"></i> Khung giờ - @field.Name</h2>
+        <p class="text-muted">
+            <span class="badge bg-success">@field.FieldType.Name</span>
+            <span class="badge bg-info text-dark">@field.Location</span>
+        </p>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" asp-route-fieldId="@field.Id" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Thêm khung giờ
+        </a>
+        @if (!Model.Any())
+        {
+            <form asp-action="CreateDefault" asp-route-fieldId="@field.Id" method="post" class="d-inline">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-magic"></i> Tạo khung giờ mặc định
+                </button>
+            </form>
+        }
+        <a asp-controller="Fields" asp-action="Details" asp-route-id="@field.Id" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Quay lại
+        </a>
+    </div>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Khung giờ</th>
+                            <th>Thời lượng</th>
+                            <th>Giá (VNĐ/giờ)</th>
+                            <th>Loại</th>
+                            <th width="150">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var slot in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <i class="bi bi-clock"></i>
+                                    <strong>@slot.StartTime.ToString(@"hh\:mm") - @slot.EndTime.ToString(@"hh\:mm")</strong>
+                                </td>
+                                <td>@((slot.EndTime - slot.StartTime).TotalHours) giờ</td>
+                                <td class="text-success fw-bold">@slot.PricePerHour.ToString("N0")</td>
+                                <td>
+                                    @if (slot.IsWeekend)
+                                    {
+                                        <span class="badge bg-warning text-dark">Cuối tuần</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-info text-dark">Ngày thường</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Edit" asp-route-id="@slot.Id"
+                                           class="btn btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="Delete" asp-route-id="@slot.Id"
+                                              method="post" class="d-inline"
+                                              onsubmit="return confirm('Xóa khung giờ này?')">
+                                            <button type="submit" class="btn btn-danger" title="Xóa">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Chưa có khung giờ nào.
+                <br>
+                <form asp-action="CreateDefault" asp-route-fieldId="@field.Id" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-primary mt-2">
+                        <i class="bi bi-magic"></i> Tạo khung giờ mặc định (6 khung giờ)
+                    </button>
+                </form>
+            </div>
+        }
+    </div>
+</div>

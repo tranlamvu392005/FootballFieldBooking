@@ -1,0 +1,298 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <h2><i class="bi bi-speedometer2"></i> Dashboard</h2>
+        <p class="text-muted">Tổng quan hệ thống đặt sân bóng</p>
+    </div>
+</div>
+
+@if (ViewBag.Stats != null)
+{
+    var stats = ViewBag.Stats;
+
+    <!-- Statistics Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0 text-white-50">Tổng sân</h6>
+                            <h2 class="mb-0">@(stats.TotalFields ?? 0)</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-grid" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0 text-white-50">Tổng đặt sân</h6>
+                            <h2 class="mb-0">@(stats.TotalBookings ?? 0)</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-calendar-check" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0 text-white-50">Chờ xác nhận</h6>
+                            <h2 class="mb-0">@(stats.PendingBookings ?? 0)</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-clock-history" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card stat-card bg-info text-white shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0 text-white-50">Đặt hôm nay</h6>
+                            <h2 class="mb-0">@(stats.TodayBookings ?? 0)</h2>
+                        </div>
+                        <div>
+                            <i class="bi bi-calendar-event" style="font-size: 3rem; opacity: 0.5;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Revenue Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Doanh thu hôm nay</h6>
+                    <h3 class="text-success mb-0">@((stats.TodayRevenue ?? 0).ToString("N0")) VNĐ</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <h6 class="text-muted">Tổng doanh thu</h6>
+                    <h3 class="text-primary mb-0">@((stats.TotalRevenue ?? 0).ToString("N0")) VNĐ</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle"></i> Không thể tải thống kê
+    </div>
+}
+
+<!-- USER MANAGEMENT SECTION -->
+<div class="row g-3 mb-4">
+    <div class="col-md-12">
+        <h4><i class="bi bi-people"></i> Quản lý người dùng</h4>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-gradient-primary text-white shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0 text-white-50">Tổng người dùng</h6>
+                        <h2 class="mb-0">@(ViewBag.TotalUsers ?? 0)</h2>
+                        <small class="text-white-50">Toàn hệ thống</small>
+                    </div>
+                    <div>
+                        <i class="bi bi-person-circle" style="font-size: 3rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-danger text-white shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0 text-white-50">Admin</h6>
+                        <h2 class="mb-0">@(ViewBag.AdminCount ?? 0)</h2>
+                        <a href="/Admin/Users?role=Admin" class="text-white text-decoration-none">
+                            <small>Xem chi tiết <i class="bi bi-arrow-right"></i></small>
+                        </a>
+                    </div>
+                    <div>
+                        <i class="bi bi-shield-check" style="font-size: 3rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-info text-white shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0 text-white-50">Khách hàng</h6>
+                        <h2 class="mb-0">@(ViewBag.CustomerCount ?? 0)</h2>
+                        <a href="/Admin/Users?role=Customer" class="text-white text-decoration-none">
+                            <small>Xem chi tiết <i class="bi bi-arrow-right"></i></small>
+                        </a>
+                    </div>
+                    <div>
+                        <i class="bi bi-people-fill" style="font-size: 3rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card stat-card bg-warning text-dark shadow">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="card-title mb-0">Người dùng mới</h6>
+                        <h2 class="mb-0">@(ViewBag.NewUsersCount ?? 0)</h2>
+                        <small>7 ngày qua</small>
+                    </div>
+                    <div>
+                        <i class="bi bi-person-plus" style="font-size: 3rem; opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <a asp-controller="Users" asp-action="Index" class="btn btn-primary shadow">
+            <i class="bi bi-person-gear"></i> Quản lý tất cả người dùng
+        </a>
+    </div>
+</div>
+
+<!-- Recent Bookings & Popular Fields -->
+<div class="row g-3 mb-4">
+    <!-- Recent Bookings -->
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-clock-history"></i> Đơn đặt gần đây</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.RecentBookings != null && ViewBag.RecentBookings.Count > 0)
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã</th>
+                                    <th>Khách hàng</th>
+                                    <th>Sân</th>
+                                    <th>Ngày</th>
+                                    <th>Trạng thái</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var booking in ViewBag.RecentBookings)
+                                {
+                                    <tr>
+                                        <td><strong>#@booking.Id</strong></td>
+                                        <td>@(booking.User?.Email ?? "N/A")</td>
+                                        <td>@(booking.FootballField?.Name ?? "N/A")</td>
+                                        <td>@booking.PlayDate.ToString("dd/MM/yyyy")</td>
+                                        <td>
+                                            <status-badge status="@booking.Status" show-icon="false"></status-badge>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-3">
+                        <a asp-area="Admin" asp-controller="Bookings" asp-action="Index" class="btn btn-sm btn-outline-success">
+                            Xem tất cả <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted py-4">Chưa có đơn đặt nào</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Popular Fields -->
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0"><i class="bi bi-trophy"></i> Sân phổ biến</h5>
+            </div>
+            <div class="card-body">
+                @if (ViewBag.PopularFields != null && ViewBag.PopularFields.Count > 0)
+                {
+                    <div class="list-group list-group-flush">
+                        @foreach (var item in ViewBag.PopularFields)
+                        {
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0">@(item.Field?.Name ?? "N/A")</h6>
+                                    <small class="text-muted">@(item.Field?.FieldType?.Name ?? "N/A")</small>
+                                </div>
+                                <span class="badge bg-primary rounded-pill">@(item.BookingCount ?? 0) lượt</span>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p class="text-center text-muted py-4">Chưa có dữ liệu</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Remove any animation that hides cards
+            $('.stat-card, .card').css({
+                'opacity': '1',
+                'transform': 'translateY(0)',
+                'animation': 'none'
+            });
+
+            console.log('Dashboard loaded - all cards visible');
+        });
+    </script>
+
+    <style>
+        /* Force cards to be visible */
+        .stat-card,
+        .card {
+            opacity: 1 !important;
+            transform: none !important;
+            animation: none !important;
+        }
+    </style>
+}

@@ -1,0 +1,713 @@
+﻿/* ===== CUSTOM VARIABLES ===== */
+:root {
+    --primary-color: #28a745;
+    --secondary-color: #6c757d;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+    --success-gradient: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ===========================
+   GLOBAL STYLES - FIXED
+   =========================== */
+html {
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+body {
+    margin: 0; /* ✅ FIXED: Xóa margin-bottom: 60px */
+    padding: 0;
+    height: 100%;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f7fa;
+}
+
+/* ===========================
+   STICKY FOOTER LAYOUT - FIXED
+   =========================== */
+#page-container {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+#content-wrap {
+    flex: 1 0 auto; /* ✅ FIXED: Thêm 0 auto */
+    padding-bottom: 3rem; /* ✅ FIXED: Tăng padding */
+}
+
+.footer {
+    position: relative !important; /* ✅ FIXED: Thêm relative */
+    flex-shrink: 0; /* ✅ FIXED: Footer không shrink */
+    margin-top: auto;
+    width: 100%;
+    z-index: 1 !important; /* ✅ FIXED: Giảm z-index */
+}
+
+/* Thêm padding cho main content */
+main.pb-3 {
+    padding-bottom: 4rem !important; /* ✅ FIXED: Tăng padding */
+}
+
+.container {
+    margin-bottom: 2rem; /* ✅ FIXED: Thêm margin */
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
+    background-color: white !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--primary-color) !important;
+    transition: transform 0.3s ease;
+}
+
+    .navbar-brand:hover {
+        transform: scale(1.05);
+    }
+
+    .navbar-brand i {
+        color: #ffc107;
+    }
+
+.nav-link {
+    font-weight: 500;
+    transition: color 0.3s ease;
+    position: relative;
+}
+
+    .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: 0;
+        left: 50%;
+        background-color: var(--primary-color);
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+        width: 80%;
+    }
+
+    .nav-link:hover {
+        color: #28a745 !important;
+    }
+
+    /* Admin Links */
+    .nav-link.text-danger {
+        font-weight: 600;
+    }
+
+        .nav-link.text-danger:hover {
+            color: #dc3545 !important;
+            text-decoration: underline;
+        }
+
+/* ===== BUTTONS ===== */
+.btn {
+    font-weight: 500;
+    border-radius: 8px;
+    padding: 0.5rem 1.5rem;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0;
+        height: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.3);
+        transform: translate(-50%, -50%);
+        transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+        width: 300px;
+        height: 300px;
+    }
+
+.btn-success {
+    background: var(--success-gradient);
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+    }
+
+.btn-primary {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    }
+
+.btn-lg {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* ===== CARDS ===== */
+.card {
+    border: none;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    margin-bottom: 1.5rem; /* ✅ FIXED: Thêm spacing */
+}
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+.card-header {
+    background: var(--success-gradient);
+    border: none;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+.hover-card {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .hover-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
+    }
+
+/* ===== HERO SECTION ===== */
+.hero-section {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('https://img.meta.com.vn/Data/image/2021/06/14/hinh-nen-bong-da-dep-10.jpg') center/cover no-repeat;
+    padding: 80px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -20%;
+        width: 500px;
+        height: 500px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: -30%;
+        left: -10%;
+        width: 400px;
+        height: 400px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        animation: float 8s ease-in-out infinite;
+    }
+
+    .hero-section h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 1s ease;
+    }
+
+    .hero-section .lead {
+        font-size: 1.3rem;
+        animation: fadeInUp 1.2s ease;
+    }
+
+    .hero-section .btn {
+        animation: fadeInUp 1.4s ease;
+    }
+
+/* ===== STATS SECTION ===== */
+.stat-card {
+    border-radius: 15px;
+    padding: 2rem;
+    background: white;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--success-gradient);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        background: var(--success-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+
+/* ===== BADGES ===== */
+.badge {
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    border-radius: 20px;
+}
+
+/* ===== FORM CONTROLS ===== */
+.form-control, .form-select {
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.15);
+    }
+
+/* ===== ALERTS ===== */
+.alert {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    animation: slideInDown 0.5s ease;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+/* ===== TABLE ===== */
+.table {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table thead {
+        background: var(--success-gradient);
+        color: white;
+    }
+
+    .table tbody tr {
+        transition: background-color 0.2s ease;
+    }
+
+        .table tbody tr:hover {
+            background-color: rgba(40, 167, 69, 0.05);
+        }
+
+/* ===========================
+   FOOTER STYLING
+   =========================== */
+.footer {
+    background-color: #0e0e0e !important;
+    color: #ffffff;
+}
+
+    .footer h5, .footer h6 {
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .footer .text-success {
+        color: #28a745 !important;
+    }
+
+/* Footer Links */
+.footer-link {
+    color: #b8b8b8;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+    .footer-link:hover {
+        color: #28a745;
+        text-decoration: none;
+        padding-left: 5px;
+    }
+
+.footer ul li {
+    margin-bottom: 0.5rem;
+}
+
+/* Social Icons */
+.social-icon {
+    color: #b8b8b8;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+    .social-icon:hover {
+        color: #28a745;
+        transform: translateY(-3px);
+    }
+
+/* Footer Border */
+.footer .border-secondary {
+    border-color: #333 !important;
+}
+
+/* ===========================
+   NOTIFICATION SIDEBAR
+   =========================== */
+.offcanvas {
+    width: 350px !important;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.15);
+    z-index: 1050 !important; /* ✅ FIXED: Cao hơn footer */
+}
+
+.offcanvas-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.list-group-item-action:hover {
+    background-color: #f8f9fa;
+    cursor: pointer;
+}
+
+/* Notification Badge */
+.nav-link .badge {
+    animation: pulse 2s infinite;
+}
+
+/* ===========================
+   TOAST NOTIFICATIONS
+   =========================== */
+.toast {
+    min-width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1060 !important; /* ✅ FIXED: Cao nhất */
+}
+
+.toast-header {
+    font-weight: 600;
+}
+
+/* ===== LOADING SPINNER ===== */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.spinner-border-custom {
+    width: 3rem;
+    height: 3rem;
+    border: 0.4rem solid rgba(255, 255, 255, 0.3);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* ===== MODAL ===== */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    border-bottom: none;
+    padding: 1.5rem;
+}
+
+.modal-footer {
+    border-top: none;
+    padding: 1.5rem;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    background: white;
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.breadcrumb-item.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ===== SCROLL TO TOP BUTTON ===== */
+#scrollToTop {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--success-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+    #scrollToTop:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+    }
+
+    #scrollToTop.show {
+        display: flex;
+        animation: fadeIn 0.3s ease;
+    }
+
+/* ===========================
+   RESPONSIVE DESIGN
+   =========================== */
+@media (max-width: 768px) {
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+
+    .hero-section .lead {
+        font-size: 1rem;
+    }
+
+    .stat-card h2 {
+        font-size: 2rem;
+    }
+
+    .card-body {
+        padding: 1rem;
+    }
+
+    .footer .col-md-4 {
+        text-align: center;
+    }
+
+    .footer .d-flex {
+        justify-content: center;
+    }
+
+    .footer ul {
+        padding-left: 0;
+    }
+
+    .offcanvas {
+        width: 280px !important;
+    }
+
+    #content-wrap {
+        padding-bottom: 4rem; /* ✅ FIXED: Thêm padding cho mobile */
+    }
+}
+
+@media (max-width: 576px) {
+    .footer {
+        font-size: 0.9rem;
+    }
+
+        .footer .small {
+            font-size: 0.8rem !important;
+        }
+
+    .social-icon i {
+        font-size: 1.2rem !important;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+}
+
+.shadow {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.text-gradient {
+    background: var(--success-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-primary {
+    background: var(--primary-gradient) !important;
+}
+
+.bg-gradient-success {
+    background: var(--success-gradient) !important;
+}
+
+.box-shadow {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.text-light {
+    color: #f8f9fa !important;
+}
+
+/* ===========================
+   SCROLLBAR STYLING
+   =========================== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+    }
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-30px);
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}
+
+/* ===========================
+   ADDITIONAL SPACING FIXES
+   =========================== */
+
+/* Đảm bảo content không bị che */
+body > * {
+    position: relative;
+    z-index: auto;
+}
+
+/* Row spacing */
+.row {
+    margin-bottom: 1rem;
+}

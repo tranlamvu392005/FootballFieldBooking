@@ -1,0 +1,227 @@
+﻿@model FootballFieldBooking_New.Models.Booking
+
+@{
+    ViewData["Title"] = "Chi tiết đặt sân #" + Model.Id;
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                    <li class="breadcrumb-item"><a asp-action="Index">Lịch sử đặt sân</a></li>
+                    <li class="breadcrumb-item active">Đơn #@Model.Id</li>
+                </ol>
+            </nav>
+
+            <!-- Status Alert -->
+            @switch (Model.Status)
+            {
+                case BookingStatus.Pending:
+                    <div class="alert alert-warning">
+                        <i class="bi bi-clock-history"></i>
+                        <strong>Đang chờ xác nhận</strong> - Đơn đặt sân của bạn đang được xử lý. Vui lòng chờ xác nhận.
+                    </div>
+                    break;
+                case BookingStatus.Confirmed:
+                    <div class="alert alert-success">
+                        <i class="bi bi-check-circle"></i>
+                        <strong>Đã xác nhận</strong> - Đơn đặt sân đã được xác nhận. Vui lòng đến đúng giờ!
+                    </div>
+                    break;
+                case BookingStatus.Cancelled:
+                    <div class="alert alert-danger">
+                        <i class="bi bi-x-circle"></i>
+                        <strong>Đã hủy</strong> - Đơn đặt sân này đã bị hủy.
+                    </div>
+                    break;
+                case BookingStatus.Completed:
+                    <div class="alert alert-info">
+                        <i class="bi bi-check-all"></i>
+                        <strong>Hoàn thành</strong> - Cảm ơn bạn đã sử dụng dịch vụ!
+                    </div>
+                    break;
+            }
+
+            <!-- Booking Info Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-receipt"></i> Thông tin đặt sân #@Model.Id
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Mã đơn</h6>
+                            <p class="fw-bold">#@Model.Id</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Ngày đặt</h6>
+                            <p>@Model.BookingDate.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Field Info -->
+                    <h5><i class="bi bi-geo-alt text-danger"></i> Sân bóng</h5>
+                    <div class="row mb-3">
+                        <div class="col-md-8">
+                            <h6 class="fw-bold">@Model.FootballField.Name</h6>
+                            <p class="mb-1">
+                                <span class="badge bg-success">@Model.FootballField.FieldType.Name</span>
+                                <span class="badge bg-info text-dark">@Model.FootballField.FieldType.PlayerCount người</span>
+                            </p>
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-geo-alt"></i> @Model.FootballField.Location
+                            </p>
+                        </div>
+                        <div class="col-md-4">
+                            <img src="@Model.FootballField.ImageUrl" class="img-fluid rounded"
+                                 alt="@Model.FootballField.Name"
+                                 onerror="this.src='/images/default-field.jpg'">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- DateTime Info -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted"><i class="bi bi-calendar"></i> Ngày chơi</h6>
+                            <p class="fw-bold fs-5">@Model.PlayDate.ToString("dd/MM/yyyy")</p>
+                            <small class="text-muted">
+                                @Model.PlayDate.ToString("dddd", new System.Globalization.CultureInfo("vi-VN"))
+                            </small>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted"><i class="bi bi-clock"></i> Khung giờ</h6>
+                            <p class="fw-bold fs-5">
+                                @Model.TimeSlot.StartTime.ToString(@"hh\:mm") -
+                                @Model.TimeSlot.EndTime.ToString(@"hh\:mm")
+                            </p>
+                            @if (Model.TimeSlot.IsWeekend)
+                            {
+                                <span class="badge bg-warning text-dark">Cuối tuần</span>
+                            }
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- Price -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <h6 class="text-muted"><i class="bi bi-cash-coin"></i> Tổng tiền</h6>
+                            <h3 class="text-success fw-bold mb-0">@Model.TotalPrice.ToString("N0") VNĐ</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted"><i class="bi bi-credit-card"></i> Thanh toán</h6>
+                            @if (Model.Payment != null)
+                            {
+                                @if (Model.Payment.IsPaid)
+                                {
+                                    <span class="badge bg-success fs-6">
+                                        <i class="bi bi-check-circle"></i> Đã thanh toán
+                                    </span>
+                                    <p class="mb-0 mt-2">
+                                        <small>
+                                            @switch (Model.Payment.Method)
+                                            {
+                                                case PaymentMethod.Cash:
+                                                    <span>Tiền mặt</span>
+                                                    break;
+                                                case PaymentMethod.BankTransfer:
+                                                    <span>Chuyển khoản</span>
+                                                    break;
+                                                case PaymentMethod.EWallet:
+                                                    <span>Ví điện tử</span>
+                                                    break;
+                                            }
+                                        </small>
+                                    </p>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning text-dark fs-6">Chưa thanh toán</span>
+                                }
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark fs-6">Thanh toán khi đến sân</span>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    @if (!string.IsNullOrEmpty(Model.Notes))
+                    {
+                        <hr>
+                        <h6 class="text-muted"><i class="bi bi-chat-left-text"></i> Ghi chú</h6>
+                        <p class="fst-italic">@Model.Notes</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Customer Info Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-person"></i> Thông tin khách hàng</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Họ tên</h6>
+                            <p>@Model.User.UserName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-muted">Email</h6>
+                            <p>@Model.User.Email</p>
+                        </div>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.User.PhoneNumber))
+                    {
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Số điện thoại</h6>
+                                <p>@Model.User.PhoneNumber</p>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="card shadow">
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        @if (Model.Status == BookingStatus.Pending || Model.Status == BookingStatus.Confirmed)
+                        {
+                            <a href="/Payment?bookingId=@Model.Id" class="btn btn-success btn-lg">
+                                <i class="bi bi-credit-card"></i> Thanh toán ngay
+                            </a>
+                            <form asp-action="Cancel" asp-route-id="@Model.Id" method="post"
+                                  onsubmit="return confirm('Bạn có chắc muốn hủy đơn đặt sân này?')">
+                                <button type="submit" class="btn btn-danger w-100">
+                                    <i class="bi bi-x-circle"></i> Hủy đơn đặt sân
+                                </button>
+                            </form>
+                        }
+
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại lịch sử
+                        </a>
+
+                        <a asp-controller="FootballFields" asp-action="Index" class="btn btn-success">
+                            <i class="bi bi-calendar-plus"></i> Đặt sân mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

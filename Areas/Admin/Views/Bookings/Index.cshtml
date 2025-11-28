@@ -1,0 +1,177 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.Booking>
+
+@{
+    ViewData["Title"] = "Quản lý đặt sân";
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="bi bi-calendar-check"></i> @ViewData["Title"]</h2>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6>Tổng đơn</h6>
+                <h2>@ViewBag.TotalBookings</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6>Chờ xác nhận</h6>
+                <h2>@ViewBag.PendingCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6>Đã xác nhận</h6>
+                <h2>@ViewBag.ConfirmedCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-info text-white shadow-sm">
+            <div class="card-body text-center">
+                <h6>Doanh thu</h6>
+                <h2>@ViewBag.TotalRevenue.ToString("N0")</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="searchTerm" value="@ViewData["CurrentSearch"]"
+                           class="form-control" placeholder="Tìm theo khách hàng, sân, mã đơn...">
+                </div>
+                <div class="col-md-2">
+                    <select name="status" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="@BookingStatus.Pending" selected="@(ViewData["CurrentStatus"]?.ToString() == BookingStatus.Pending.ToString())">Chờ xác nhận</option>
+                        <option value="@BookingStatus.Confirmed" selected="@(ViewData["CurrentStatus"]?.ToString() == BookingStatus.Confirmed.ToString())">Đã xác nhận</option>
+                        <option value="@BookingStatus.Cancelled" selected="@(ViewData["CurrentStatus"]?.ToString() == BookingStatus.Cancelled.ToString())">Đã hủy</option>
+                        <option value="@BookingStatus.Completed" selected="@(ViewData["CurrentStatus"]?.ToString() == BookingStatus.Completed.ToString())">Hoàn thành</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="fromDate" value="@ViewData["FromDate"]"
+                           class="form-control" placeholder="Từ ngày">
+                </div>
+                <div class="col-md-2">
+                    <input type="date" name="toDate" value="@ViewData["ToDate"]"
+                           class="form-control" placeholder="Đến ngày">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Bookings Table -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Sân</th>
+                            <th>Ngày chơi</th>
+                            <th>Giờ</th>
+                            <th>Giá</th>
+                            <th>Trạng thái</th>
+                            <th>Thanh toán</th>
+                            <th width="150">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            <tr>
+                                <td><strong>#@booking.Id</strong></td>
+                                <td>
+                                    <strong>@booking.User.UserName</strong><br>
+                                    <small class="text-muted">@booking.User.Email</small>
+                                </td>
+                                <td>
+                                    <strong>@booking.FootballField.Name</strong><br>
+                                    <small class="text-muted">@booking.FootballField.FieldType.Name</small>
+                                </td>
+                                <td>@booking.PlayDate.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    <small>@booking.TimeSlot.StartTime.ToString(@"hh\:mm") - @booking.TimeSlot.EndTime.ToString(@"hh\:mm")</small>
+                                </td>
+                                <td>
+                                    <price amount="@booking.TotalPrice" color="success"></price>
+                                </td>
+                                <td>
+                                    <status-badge status="@booking.Status"></status-badge>
+                                </td>
+                                <td>
+                                    @if (booking.Payment != null && booking.Payment.IsPaid)
+                                    {
+                                        <span class="badge bg-success">Đã thanh toán</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-warning text-dark">Chưa thanh toán</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@booking.Id"
+                                           class="btn btn-info" title="Chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        @if (booking.Status == BookingStatus.Pending)
+                                        {
+                                            <form asp-action="Confirm" asp-route-id="@booking.Id"
+                                                  method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-success" title="Xác nhận">
+                                                    <i class="bi bi-check"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (booking.Status == BookingStatus.Confirmed)
+                                        {
+                                            <form asp-action="Complete" asp-route-id="@booking.Id"
+                                                  method="post" class="d-inline">
+                                                <button type="submit" class="btn btn-primary" title="Hoàn thành">
+                                                    <i class="bi bi-check-all"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Không có đơn đặt nào.
+            </div>
+        }
+    </div>
+</div>

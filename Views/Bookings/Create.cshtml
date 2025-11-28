@@ -1,0 +1,314 @@
+﻿@{
+    ViewData["Title"] = "Đặt sân";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            @if (ViewBag.Field != null)
+            {
+                var field = ViewBag.Field as FootballFieldBooking_New.Models.FootballField;
+
+                <!-- Breadcrumb -->
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Trang chủ</a></li>
+                        <li class="breadcrumb-item"><a asp-controller="FootballFields" asp-action="Index">Danh sách sân</a></li>
+                        <li class="breadcrumb-item"><a asp-controller="FootballFields" asp-action="Details" asp-route-id="@field.Id">@field.Name</a></li>
+                        <li class="breadcrumb-item active">Đặt sân</li>
+                    </ol>
+                </nav>
+
+                <!-- Error Message -->
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <i class="bi bi-x-circle"></i> @TempData["Error"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+
+                <!-- Form Card -->
+                <div class="card shadow">
+                    <div class="card-header bg-success text-white">
+                        <h4 class="mb-0"><i class="bi bi-calendar-check"></i> Đặt sân bóng</h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Field Info -->
+                        <div class="alert alert-info">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h5 class="mb-1">@field.Name</h5>
+                                    <p class="mb-1">
+                                        <span class="badge bg-success">@field.FieldType.Name</span>
+                                        <span class="badge bg-info text-dark">@field.FieldType.PlayerCount người</span>
+                                    </p>
+                                    <small><i class="bi bi-geo-alt"></i> @field.Location</small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <img src="@field.ImageUrl" class="img-fluid rounded" alt="@field.Name"
+                                         style="max-height: 80px;" onerror="this.src='/images/default-field.jpg'">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Form -->
+                        <form asp-action="Create" method="post" id="bookingForm">
+                            <input type="hidden" name="fieldId" value="@field.Id" />
+
+                            <!-- Play Date -->
+                            <div class="mb-3">
+                                <label for="playDate" class="form-label">
+                                    <i class="bi bi-calendar"></i> Ngày chơi <span class="text-danger">*</span>
+                                </label>
+                                <input type="date" class="form-control" id="playDate" name="playDate"
+                                       min="@ViewBag.MinDate" required
+                                       onchange="loadTimeSlots()">
+                                <small class="text-muted">Đặt trước tối thiểu 1 ngày</small>
+                            </div>
+
+                            <!-- Time Slot -->
+                            <div class="mb-3">
+                                <label for="timeSlotId" class="form-label">
+                                    <i class="bi bi-clock"></i> Khung giờ <span class="text-danger">*</span>
+                                </label>
+                                <select class="form-select" id="timeSlotId" name="timeSlotId" required onchange="updatePrice()">
+                                    <option value="">-- Chọn ngày chơi trước --</option>
+                                </select>
+                                <div id="slotLoading" class="text-center d-none my-2">
+                                    <div class="spinner-border spinner-border-sm text-success" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    Đang tải khung giờ...
+                                </div>
+                            </div>
+
+                            <!-- Available Slots Grid -->
+                            <div id="availableSlots" class="mb-3 d-none">
+                                <label class="form-label">Khung giờ khả dụng:</label>
+                                <div class="row g-2" id="slotsGrid"></div>
+                            </div>
+
+                            <!-- Price Display -->
+                            <div class="alert alert-success d-none" id="priceDisplay">
+                                <h5 class="mb-0">
+                                    <i class="bi bi-cash-coin"></i> Tổng tiền:
+                                    <span id="totalPrice" class="fw-bold">0</span> VNĐ
+                                </h5>
+                            </div>
+
+                            <!-- Notes -->
+                            <div class="mb-3">
+                                <label for="notes" class="form-label">
+                                    <i class="bi bi-chat-left-text"></i> Ghi chú
+                                </label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"
+                                          placeholder="Ghi chú thêm cho đơn đặt sân (tùy chọn)"></textarea>
+                            </div>
+
+                            <!-- Submit Buttons -->
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-success btn-lg" id="submitBtn" disabled>
+                                    <i class="bi bi-check-circle"></i> Xác nhận đặt sân
+                                </button>
+                                <a asp-controller="FootballFields" asp-action="Details" asp-route-id="@field.Id"
+                                   class="btn btn-outline-secondary">
+                                    <i class="bi bi-arrow-left"></i> Quay lại
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Booking Rules -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Lưu ý khi đặt sân</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li>Đặt sân trước tối thiểu 1 ngày</li>
+                            <li>Thanh toán khi đến sân</li>
+                            <li>Hủy đơn trước 24h để được hoàn tiền</li>
+                            <li>Vui lòng đến đúng giờ để tận dụng thời gian chơi</li>
+                            <li>Liên hệ hotline <strong>1900-xxxx</strong> nếu cần hỗ trợ</li>
+                        </ul>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-danger">
+                    <i class="bi bi-x-circle"></i> Không tìm thấy thông tin sân.
+                    <a asp-controller="FootballFields" asp-action="Index">Quay lại danh sách</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Loading Overlay -->
+<div class="spinner-overlay" style="display: none;">
+    <div class="spinner-border-custom"></div>
+</div>
+
+@section Scripts {
+    <script>
+        const fieldId = @ViewBag.Field.Id;
+        let selectedSlotPrice = 0;
+        // Form submit with loading
+        $('#bookingForm').on('submit', function () {
+            if ($(this)[0].checkValidity()) {
+                showLoading();
+            }
+        });
+
+        async function loadTimeSlots() {
+            const playDate = document.getElementById('playDate').value;
+            const timeSlotSelect = document.getElementById('timeSlotId');
+            const slotsGrid = document.getElementById('slotsGrid');
+            const availableSlots = document.getElementById('availableSlots');
+            const loading = document.getElementById('slotLoading');
+
+            if (!playDate) return;
+
+            loading.classList.remove('d-none');
+            timeSlotSelect.disabled = true;
+            availableSlots.classList.add('d-none');
+
+            try {
+                const response = await fetch(`/FootballFields/GetAvailableSlots?fieldId=${fieldId}&date=${playDate}`);
+                const slots = await response.json();
+
+                timeSlotSelect.innerHTML = '<option value="">-- Chọn khung giờ --</option>';
+                slotsGrid.innerHTML = '';
+
+                if (slots.length === 0) {
+                    timeSlotSelect.innerHTML = '<option value="">Không có khung giờ</option>';
+                } else {
+                    slots.forEach(slot => {
+                        const option = document.createElement('option');
+                        option.value = slot.id;
+                        option.dataset.price = slot.pricePerHour;
+                        option.textContent = `${slot.startTime} - ${slot.endTime} (${slot.pricePerHour.toLocaleString('vi-VN')} VNĐ/giờ)`;
+                        option.disabled = slot.isBooked;
+                        if (slot.isBooked) {
+                            option.textContent += ' - ĐÃ ĐẶT';
+                        }
+                        timeSlotSelect.appendChild(option);
+                    });
+
+                    const availableList = slots.filter(s => !s.isBooked);
+                    if (availableList.length > 0) {
+                        availableSlots.classList.remove('d-none');
+                        availableList.forEach(slot => {
+                            const col = document.createElement('div');
+                            col.className = 'col-md-4 col-sm-6';
+                            col.innerHTML = `
+                                        <div class="card slot-card available"
+                                             onclick="selectSlot(${slot.id}, ${slot.pricePerHour})">
+                                            <div class="card-body text-center p-2">
+                                                <h6 class="mb-1"><i class="bi bi-clock"></i> ${slot.startTime} - ${slot.endTime}</h6>
+                                                <p class="mb-0 text-success fw-bold">${slot.pricePerHour.toLocaleString('vi-VN')} VNĐ</p>
+                                                ${slot.isWeekend ? '<span class="badge bg-warning text-dark">Cuối tuần</span>' : ''}
+                                            </div>
+                                        </div>
+                                    `;
+                            slotsGrid.appendChild(col);
+                        });
+                    }
+                }
+
+                timeSlotSelect.disabled = false;
+                document.getElementById('submitBtn').disabled = true;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Có lỗi khi tải khung giờ. Vui lòng thử lại!');
+            } finally {
+                loading.classList.add('d-none');
+            }
+        }
+
+        function selectSlot(slotId, price) {
+            const timeSlotSelect = document.getElementById('timeSlotId');
+            timeSlotSelect.value = slotId;
+            updatePrice();
+
+            // Highlight selected card
+            document.querySelectorAll('.slot-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+        }
+
+        function updatePrice() {
+            const timeSlotSelect = document.getElementById('timeSlotId');
+            const selectedOption = timeSlotSelect.options[timeSlotSelect.selectedIndex];
+            const priceDisplay = document.getElementById('priceDisplay');
+            const totalPrice = document.getElementById('totalPrice');
+            const submitBtn = document.getElementById('submitBtn');
+
+            if (selectedOption.value && selectedOption.dataset.price) {
+                selectedSlotPrice = parseFloat(selectedOption.dataset.price);
+                totalPrice.textContent = selectedSlotPrice.toLocaleString('vi-VN');
+                priceDisplay.classList.remove('d-none');
+                submitBtn.disabled = false;
+            } else {
+                priceDisplay.classList.add('d-none');
+                submitBtn.disabled = true;
+            }
+        }
+    </script>
+
+    <style>
+        .slot-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+            .slot-card.available:hover {
+                border-color: #28a745;
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            }
+
+            .slot-card.selected {
+                border-color: #28a745;
+                background-color: #d4edda;
+            }
+    </style>
+    <style>
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slot-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .slot-card.available:hover {
+            border-color: #28a745;
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+        }
+        
+        .slot-card.selected {
+            border-color: #28a745;
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+        }
+        
+        .slot-card.booked {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+}

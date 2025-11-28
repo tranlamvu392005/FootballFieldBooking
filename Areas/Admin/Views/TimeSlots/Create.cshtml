@@ -1,0 +1,68 @@
+﻿@{
+    ViewData["Title"] = "Thêm khung giờ";
+    var field = ViewBag.Field as FootballFieldBooking_New.Models.FootballField;
+}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Thêm khung giờ</h4>
+                <small>@field.Name - @field.FieldType.Name</small>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <input type="hidden" name="fieldId" value="@field.Id" />
+
+                    <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Giờ bắt đầu <span class="text-danger">*</span></label>
+                            <input type="time" name="startTime" class="form-control" required />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Giờ kết thúc <span class="text-danger">*</span></label>
+                            <input type="time" name="endTime" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giá (VNĐ/giờ) <span class="text-danger">*</span></label>
+                        <input type="number" name="pricePerHour" class="form-control"
+                               min="0" step="1000" value="300000" required />
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="isWeekend" class="form-check-input" />
+                        <label class="form-check-label">
+                            Khung giờ cuối tuần (giá cao hơn)
+                        </label>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Thêm khung giờ
+                        </button>
+                        <a asp-action="Index" asp-route-fieldId="@field.Id" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i>
+            <strong>Gợi ý khung giờ phổ biến:</strong>
+            <ul class="mb-0 mt-2">
+                <li>06:00 - 08:00 (200,000 VNĐ)</li>
+                <li>08:00 - 10:00 (250,000 VNĐ)</li>
+                <li>14:00 - 16:00 (300,000 VNĐ)</li>
+                <li>16:00 - 18:00 (350,000 VNĐ)</li>
+                <li>18:00 - 20:00 (400,000 VNĐ)</li>
+                <li>20:00 - 22:00 (400,000 VNĐ)</li>
+            </ul>
+        </div>
+    </div>
+</div>

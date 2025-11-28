@@ -1,0 +1,210 @@
+﻿@page
+@model FootballFieldBooking_New.Pages.PaymentModel
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4">
+                <i class="bi bi-credit-card"></i> Thanh toán đặt sân
+            </h2>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <alert type="danger" dismissible="true">@Model.ErrorMessage</alert>
+
+                <div class="text-center">
+                    <a href="/Bookings" class="btn btn-primary">Về lịch sử đặt sân</a>
+                </div>
+            }
+            else
+            {
+                <!-- Booking Summary -->
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-receipt"></i> Thông tin đơn đặt #@Model.Booking.Id
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Sân bóng</h6>
+                                <p class="fw-bold">@Model.Field.Name</p>
+                                <p>
+                                    <span class="badge bg-success">@Model.Field.FieldType.Name</span>
+                                    <span class="badge bg-info text-dark">@Model.Field.Location</span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <h6 class="text-muted">Thời gian</h6>
+                                <p class="fw-bold">
+                                    <i class="bi bi-calendar"></i> @Model.Booking.PlayDate.ToString("dd/MM/yyyy")
+                                </p>
+                                <p>
+                                    <i class="bi bi-clock"></i>
+                                    @Model.TimeSlot.StartTime.ToString(@"hh\:mm") -
+                                    @Model.TimeSlot.EndTime.ToString(@"hh\:mm")
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Tổng tiền:</h5>
+                            <h3 class="mb-0 text-success">
+                                <price amount="@Model.Booking.TotalPrice" size="large"></price>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form method="post">
+                    <input type="hidden" name="bookingId" value="@Model.Booking.Id" />
+
+                    <div class="card shadow mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0">
+                                <i class="bi bi-cash-coin"></i> Chọn phương thức thanh toán
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="list-group">
+                                <!-- Cash -->
+                                <label class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <input class="form-check-input me-3"
+                                               type="radio"
+                                               asp-for="SelectedPaymentMethod"
+                                               value="@PaymentMethod.Cash"
+                                               checked />
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <i class="bi bi-cash text-success"></i> Tiền mặt
+                                            </h6>
+                                            <small class="text-muted">Thanh toán khi đến sân</small>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- Bank Transfer -->
+                                <label class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <input class="form-check-input me-3"
+                                               type="radio"
+                                               asp-for="SelectedPaymentMethod"
+                                               value="@PaymentMethod.BankTransfer" />
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <i class="bi bi-bank text-primary"></i> Chuyển khoản
+                                            </h6>
+                                            <small class="text-muted">Chuyển khoản qua ngân hàng</small>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- E-Wallet -->
+                                <label class="list-group-item">
+                                    <div class="d-flex align-items-center">
+                                        <input class="form-check-input me-3"
+                                               type="radio"
+                                               asp-for="SelectedPaymentMethod"
+                                               value="@PaymentMethod.EWallet" />
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">
+                                                <i class="bi bi-wallet2 text-warning"></i> Ví điện tử
+                                            </h6>
+                                            <small class="text-muted">MoMo, ZaloPay, VNPay...</small>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Transfer Info (hiện khi chọn chuyển khoản) -->
+                    <div class="card shadow mb-4 d-none" id="bankTransferInfo">
+                        <div class="card-header bg-info text-white">
+                            <h6 class="mb-0">Thông tin chuyển khoản</h6>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Ngân hàng:</strong> Vietcombank</p>
+                            <p><strong>Số tài khoản:</strong> 1234567890</p>
+                            <p><strong>Chủ tài khoản:</strong> CONG TY TNHH SAN BONG</p>
+                            <p><strong>Nội dung:</strong> BOOKING @Model.Booking.Id</p>
+                        </div>
+                    </div>
+
+                    <!-- Terms -->
+                    <div class="card shadow mb-4">
+                        <div class="card-body">
+                            <div class="form-check">
+                                <input class="form-check-input"
+                                       type="checkbox"
+                                       asp-for="AcceptTerms"
+                                       required />
+                                <label class="form-check-label" asp-for="AcceptTerms">
+                                    Tôi đồng ý với <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">điều khoản dịch vụ</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="bi bi-check-circle"></i> Xác nhận thanh toán
+                        </button>
+                        <a href="/Bookings/Details/@Model.Booking.Id" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Quay lại
+                        </a>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Terms Modal -->
+<div class="modal fade" id="termsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Điều khoản dịch vụ</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <h6>1. Chính sách đặt sân</h6>
+                <p>- Đặt sân trước tối thiểu 1 ngày</p>
+                <p>- Thanh toán theo phương thức đã chọn</p>
+
+                <h6>2. Chính sách hủy</h6>
+                <p>- Hủy trước 24h: Hoàn tiền 100%</p>
+                <p>- Hủy trong vòng 24h: Không hoàn tiền</p>
+
+                <h6>3. Quy định sử dụng</h6>
+                <p>- Vui lòng đến đúng giờ</p>
+                <p>- Giữ gìn vệ sinh sân bóng</p>
+                <p>- Tuân thủ nội quy của sân</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Show/hide bank transfer info
+        $('input[name="SelectedPaymentMethod"]').change(function() {
+            if ($(this).val() == '@((int)PaymentMethod.BankTransfer)') {
+                $('#bankTransferInfo').removeClass('d-none');
+            } else {
+                $('#bankTransferInfo').addClass('d-none');
+            }
+        });
+    </script>
+}

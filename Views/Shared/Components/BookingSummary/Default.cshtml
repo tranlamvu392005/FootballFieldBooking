@@ -1,0 +1,34 @@
+﻿@model dynamic
+
+<div class="card shadow-sm border-primary">
+    <div class="card-header bg-primary text-white">
+        <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Tóm tắt đặt sân</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-4">
+                <div class="p-2">
+                    <h3 class="text-primary mb-0">@Model.TotalBookings</h3>
+                    <small class="text-muted">Tổng đơn</small>
+                </div>
+            </div>
+            <div class="col-4 border-start border-end">
+                <div class="p-2">
+                    <h3 class="text-warning mb-0">@Model.PendingBookings</h3>
+                    <small class="text-muted">Chờ xác nhận</small>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="p-2">
+                    <h3 class="text-success mb-0">@Model.UpcomingBookings</h3>
+                    <small class="text-muted">Sắp tới</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer bg-white text-center">
+        <a href="/Bookings" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-list"></i> Xem lịch sử đặt sân
+        </a>
+    </div>
+</div>

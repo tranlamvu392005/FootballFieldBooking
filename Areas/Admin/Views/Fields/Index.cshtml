@@ -1,0 +1,140 @@
+﻿@model IEnumerable<FootballFieldBooking_New.Models.FootballField>
+
+@{
+    ViewData["Title"] = "Quản lý sân bóng";
+}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h2><i class="bi bi-grid"></i> @ViewData["Title"]</h2>
+    </div>
+    <div class="col-md-6 text-end">
+        <a asp-action="Create" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Thêm sân mới
+        </a>
+    </div>
+</div>
+
+<!-- Search & Filter -->
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="Index" method="get">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="searchTerm" value="@ViewData["CurrentSearch"]"
+                           class="form-control" placeholder="Tìm theo tên, vị trí...">
+                </div>
+                <div class="col-md-3">
+                    <select name="fieldTypeId" class="form-select">
+                        <option value="">-- Tất cả loại sân --</option>
+                        @foreach (var type in ViewBag.FieldTypes)
+                        {
+                            <option value="@type.Id" selected="@(ViewData["CurrentFieldType"]?.ToString() == type.Id.ToString())">
+                                @type.Name
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select name="isAvailable" class="form-select">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="true" selected="@(ViewData["CurrentAvailable"]?.ToString() == "True")">Đang hoạt động</option>
+                        <option value="false" selected="@(ViewData["CurrentAvailable"]?.ToString() == "False")">Tạm ngưng</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i> Lọc
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Fields Table -->
+<div class="card shadow-sm">
+    <div class="card-body">
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Tên sân</th>
+                            <th>Loại sân</th>
+                            <th>Vị trí</th>
+                            <th>Khung giờ</th>
+                            <th>Trạng thái</th>
+                            <th width="250">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var field in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@field.Name</strong><br>
+                                    <small class="text-muted">@field.Description</small>
+                                </td>
+                                <td>
+                                    <span class="badge bg-info">@field.FieldType.Name</span><br>
+                                    <small class="text-muted">@field.FieldType.PlayerCount người</small>
+                                </td>
+                                <td>
+                                    <i class="bi bi-geo-alt text-danger"></i> @field.Location
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary">@field.TimeSlots.Count khung giờ</span>
+                                </td>
+                                <td>
+                                    @if (field.IsAvailable)
+                                    {
+                                        <span class="badge bg-success">Đang hoạt động</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">Tạm ngưng</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <a asp-action="Details" asp-route-id="@field.Id"
+                                           class="btn btn-info" title="Chi tiết">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@field.Id"
+                                           class="btn btn-warning" title="Sửa">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <form asp-action="ToggleAvailability" asp-route-id="@field.Id"
+                                              method="post" class="d-inline">
+                                            <button type="submit"
+                                                    class="btn @(field.IsAvailable ? "btn-secondary" : "btn-success")"
+                                                    title="@(field.IsAvailable ? "Tạm ngưng" : "Kích hoạt")">
+                                                <i class="bi @(field.IsAvailable ? "bi-pause" : "bi-play")"></i>
+                                            </button>
+                                        </form>
+                                        <a asp-action="Delete" asp-route-id="@field.Id"
+                                           class="btn btn-danger" title="Xóa">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="alert alert-info text-center">
+                <i class="bi bi-info-circle"></i> Không có sân nào.
+                <a asp-action="Create" class="btn btn-success btn-sm ms-2">
+                    <i class="bi bi-plus"></i> Thêm sân đầu tiên
+                </a>
+            </div>
+        }
+    </div>
+</div>

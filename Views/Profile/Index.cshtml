@@ -1,0 +1,147 @@
+﻿@model FootballFieldBooking_New.Controllers.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
+}
+
+<div class="container my-5">
+    <div class="row g-4">
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        @if (!string.IsNullOrEmpty(Model.Profile?.AvatarUrl))
+                        {
+                            <img src="@Model.Profile.AvatarUrl" alt="Avatar"
+                                 class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-circle text-success" style="font-size: 150px;"></i>
+                        }
+                    </div>
+                    <h4 class="mb-1">@(Model.Profile?.FullName ?? "Chưa cập nhật")</h4>
+                    <p class="text-muted">@Model.User.Email</p>
+
+                    <a asp-action="Edit" class="btn btn-success w-100">
+                        <i class="bi bi-pencil"></i> Chỉnh sửa thông tin
+                    </a>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="card shadow mt-3">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-graph-up"></i> Thống kê của tôi</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <h3 class="text-primary mb-0">@Model.TotalBookings</h3>
+                            <small class="text-muted">Tổng đơn</small>
+                        </div>
+                        <div class="col-6">
+                            <h3 class="text-success mb-0">
+                                @((Model.TotalSpent / 1000000m).ToString("F1"))M
+                            </h3>
+                            <small class="text-muted">Tổng chi</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info & Bookings -->
+        <div class="col-md-8">
+            <!-- Personal Info -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-info-circle"></i> Thông tin cá nhân</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Họ và tên:</dt>
+                        <dd class="col-sm-8">@(Model.Profile?.FullName ?? "Chưa cập nhật")</dd>
+
+                        <dt class="col-sm-4">Email:</dt>
+                        <dd class="col-sm-8">@Model.User.Email</dd>
+
+                        <dt class="col-sm-4">Số điện thoại:</dt>
+                        <dd class="col-sm-8">@(Model.User.PhoneNumber ?? "Chưa cập nhật")</dd>
+
+                        <dt class="col-sm-4">Địa chỉ:</dt>
+                        <dd class="col-sm-8">@(Model.Profile?.Address ?? "Chưa cập nhật")</dd>
+
+                        <dt class="col-sm-4">Ngày sinh:</dt>
+                        <dd class="col-sm-8">
+                            @(Model.Profile?.DateOfBirth?.ToString("dd/MM/yyyy") ?? "Chưa cập nhật")
+                        </dd>
+
+                        <dt class="col-sm-4">Giới tính:</dt>
+                        <dd class="col-sm-8">
+                            @(Model.Profile?.Gender switch
+                            {
+                                "Male" => "Nam",
+                                "Female" => "Nữ",
+                                "Other" => "Khác",
+                                _ => "Chưa cập nhật"
+                            })
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="card shadow">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Lịch đặt sân gần đây</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.RecentBookings.Any())
+                    {
+                        <div class="list-group list-group-flush">
+                            @foreach (var booking in Model.RecentBookings)
+                            {
+                                <div class="list-group-item">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 class="mb-1">
+                                                <a asp-controller="Bookings" asp-action="Details" asp-route-id="@booking.Id">
+                                                    #@booking.Id - @booking.FootballField.Name
+                                                </a>
+                                            </h6>
+                                            <p class="mb-1">
+                                                <small>
+                                                    <i class="bi bi-calendar"></i> @booking.PlayDate.ToString("dd/MM/yyyy") |
+                                                    <i class="bi bi-clock"></i>
+                                                    @booking.TimeSlot.StartTime.ToString(@"hh\:mm") -
+                                                    @booking.TimeSlot.EndTime.ToString(@"hh\:mm")
+                                                </small>
+                                            </p>
+                                            <p class="mb-0">
+                                                <price amount="@booking.TotalPrice" size="small"></price>
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <status-badge status="@booking.Status" show-icon="false"></status-badge>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="card-footer bg-white text-center">
+                            <a asp-controller="Bookings" asp-action="Index" class="text-info">
+                                Xem tất cả <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-muted text-center mb-0">Chưa có lịch sử đặt sân</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
